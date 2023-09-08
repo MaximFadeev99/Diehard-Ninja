@@ -11,6 +11,7 @@ public abstract class State
     protected Rigidbody2D Rigidbody;
     protected PlayerInputHandler InputHandler;
     protected PlayerData PlayerData;
+    protected SpriteRenderer SpriteRenderer;
     protected float NextXVelocity;
     protected float NextYVelocity;
 
@@ -22,6 +23,7 @@ public abstract class State
         Rigidbody = Player.Rigidbody;
         InputHandler = Player.InputHandler;
         PlayerData = Player.PlayerData;
+        SpriteRenderer = Player.SpriteRenderer;
     }
 
     public virtual void Enter()

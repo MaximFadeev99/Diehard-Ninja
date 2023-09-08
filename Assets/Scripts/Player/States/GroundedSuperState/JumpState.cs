@@ -5,10 +5,9 @@ using UnityEngine;
 public class JumpState : State
 {
     private float _xInput;
-    private float _jumpXVelocity;
 
     public JumpState(Player player, string animationCode) 
-        : base(player, animationCode) {}
+        : base(player, animationCode) { }
 
 
     public override void Enter()
@@ -32,21 +31,11 @@ public class JumpState : State
     public override void UpdatePhysicalMotion()
     {
         float jumpForwardVelocityModifier = 7f;
-        
-        if (Player.IsJumping)
-        {
-            _jumpXVelocity = _xInput != 0f ? 
-                _xInput * jumpForwardVelocityModifier : Rigidbody.velocity.x;
+        float jumpXVelocity = _xInput != 0f ?
+               _xInput * jumpForwardVelocityModifier : Rigidbody.velocity.x;
 
-            NextXVelocity = _jumpXVelocity;
-            NextYVelocity = PlayerData.JumpVelocity;
-            base.UpdatePhysicalMotion();
-        }
-        else 
-        {
-            NextXVelocity = _jumpXVelocity;
-            NextYVelocity = Rigidbody.velocity.y;
-            base.UpdatePhysicalMotion();
-        }
+        NextXVelocity = jumpXVelocity;
+        NextYVelocity = Player.IsJumping ? PlayerData.JumpVelocity : Rigidbody.velocity.y;
+        base.UpdatePhysicalMotion();
     }
 }

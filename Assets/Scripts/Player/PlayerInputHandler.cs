@@ -10,6 +10,8 @@ public class PlayerInputHandler : MonoBehaviour
     public Vector2 MovementInput { get; private set; }
     public Action JumpButtonPushed;
     public Action JumpButtonReleased;
+
+    private bool _isJumpInputBlocked = false;
  
     public void DidMovement(InputAction.CallbackContext context) 
     {
@@ -19,8 +21,12 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void DidJump(InputAction.CallbackContext context) 
     {
-        if (context.started)
+        if (context.started && _isJumpInputBlocked == false) 
+        {
             JumpButtonPushed?.Invoke();
+            _isJumpInputBlocked = true;
+        }
+            
 
         if (context.canceled)
             JumpButtonReleased?.Invoke();
@@ -33,4 +39,6 @@ public class PlayerInputHandler : MonoBehaviour
 
         //Debug.Log("main attack ");
     }
+
+    public void ResetJumpInputBlock() => _isJumpInputBlocked = false;
 }

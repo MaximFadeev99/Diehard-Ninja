@@ -22,18 +22,12 @@ public class GroundedSuperState : SuperState
       
     public override State SetState()
     {
-        State newState;
+        State newState = base.SetState();
 
-        newState = CurrentState.TryChange();
-
-        if (newState != StateMachine.CurrentState)
-        {
-            newState.Enter();
-            CurrentState = newState;
-        }
+        if (newState != JumpState)
+            Player.InputHandler.ResetJumpInputBlock();
 
         return newState;
-
     }
 
     public void ChangeAwakeState() 

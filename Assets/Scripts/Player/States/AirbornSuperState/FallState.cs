@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class FallState : State
 {
-    public FallState(Player player, string animationCode) 
-        : base(player, animationCode) {}
     private float _startXVelocity;
     private float _gravityAmplifier = 0.1f;
 
+    public FallState(Player player, string animationCode) 
+        : base(player, animationCode) {}
 
     public override void Enter()
     {
@@ -18,7 +18,7 @@ public class FallState : State
 
     public override State TryChange()
     {
-        if (Player.Rigidbody.velocity.y < 0) 
+        if (Player.Rigidbody.velocity.y < 0)
         {
             return this;
         }
@@ -28,6 +28,17 @@ public class FallState : State
 
     public override void UpdatePhysicalMotion()
     {
+        float fallXModifer = 0.1f;
+
+        if (InputHandler.MovementInput.x > 0)
+        {
+            _startXVelocity += fallXModifer;
+        }
+        else if (InputHandler.MovementInput.x < 0)
+        {
+            _startXVelocity -= fallXModifer;
+        }       
+
         NextXVelocity = _startXVelocity;
         NextYVelocity = Rigidbody.velocity.y - _gravityAmplifier;
         base.UpdatePhysicalMotion();       

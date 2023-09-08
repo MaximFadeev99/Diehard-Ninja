@@ -16,7 +16,20 @@ public abstract class SuperState
         Player = stateMachine.Player;
     }
 
-    public abstract State SetState();
+    public virtual State SetState() 
+    {
+        State newState;
+
+        newState = CurrentState.TryChange();
+
+        if (newState != StateMachine.CurrentState)
+        {
+            newState.Enter();
+            CurrentState = newState;
+        }
+
+        return newState;
+    }
 
     public void EnterDefaultState() 
     {

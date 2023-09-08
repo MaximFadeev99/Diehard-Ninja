@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -16,12 +17,14 @@ public class Player : MonoBehaviour
     #region PossibleSuperStates
     public GroundedSuperState GroundedSuperState { get; private set; }
     public AirbornSuperState AirbornSuperState { get; private set; }
+    public WallTouchingSuperState WallTouchingSuperState { get; private set; }
     #endregion
 
     #region Utilities
     private Timer _timer;
     #endregion
 
+    #region CheckBooleans
     private bool _isGrounded;
     public bool IsGrounded    
     { 
@@ -29,7 +32,7 @@ public class Player : MonoBehaviour
         private set 
         {
             _isGrounded = value;
-            //Debug.Log("isGrounded: " +  _isGrounded);
+            Debug.Log("isGrounded: " +  _isGrounded);
         }    
     }
 
@@ -44,7 +47,12 @@ public class Player : MonoBehaviour
             //Debug.Log(_isJumping);
         } 
     }
-    public float FacindDirection = 1;
+
+    public bool IsTouchingWallRight;
+    public bool IsTouchingWallLeft;
+    public bool IsWallJumping;
+
+    #endregion
 
     private void Awake()
     {
@@ -57,22 +65,23 @@ public class Player : MonoBehaviour
         StateMachine = new StateMachine(this);
         GroundedSuperState = new GroundedSuperState(StateMachine);
         AirbornSuperState = new AirbornSuperState(StateMachine);
+        WallTouchingSuperState = new WallTouchingSuperState(StateMachine);
         StateMachine.Reset();
-        CheckIfGrounded();
+        DoSurfaceRaycasts();
     }
 
     private void OnEnable()
     {
         InputHandler.JumpButtonPushed += OnJumpButtonPushed;
         InputHandler.JumpButtonReleased += ResetJumping;
-        _timer.TimeIsUp += OnTimerExpired;
+        //_timer.TimeIsUp += OnTimerExpired;
     }
 
     private void OnDisable()
     {
         InputHandler.JumpButtonPushed -= OnJumpButtonPushed;
         InputHandler.JumpButtonReleased += ResetJumping;
-        _timer.TimeIsUp -= OnTimerExpired;
+        //_timer.TimeIsUp -= OnTimerExpired;
     }
 
 
@@ -81,7 +90,7 @@ public class Player : MonoBehaviour
         if (_timer.IsActive)
             _timer.Tick();
 
-        CheckIfGrounded();
+        DoSurfaceRaycasts();
 
         StateMachine.DoLogicUpdate();
 
@@ -100,28 +109,48 @@ public class Player : MonoBehaviour
 
     private void OnJumpButtonPushed() 
     {
-        IsJumping = true;
-        _timer.TimeIsUp += ResetJumping;
-        _timer.StartTimer(0.5f);
+        if ((IsTouchingWallLeft || IsTouchingWallRight))
+        {
+            IsWallJumping = true;
+            _timer.TimeIsUp += ResetJumping;
+            _timer.StartTimer(PlayerData.JumpDuration);
+        }
+        else if (IsGrounded) 
+        {
+            IsJumping = true;
+            _timer.TimeIsUp += ResetJumping;
+            _timer.StartTimer(PlayerData.JumpDuration);
+        }             
     }
 
     public void ResetJumping() 
     {
         IsJumping = false;
+        IsWallJumping = false;
         _timer.TimeIsUp -= ResetJumping;
     }
 
-    private void CheckIfGrounded() 
+    private void DoSurfaceRaycasts() 
     {
         IsGrounded = Physics2D.Raycast
-            (transform.position, Vector2.down, PlayerData.GroundCheck, PlayerData.WallLayerMask);
+            (transform.position, Vector2.down, PlayerData.GroundDistanceCheck, PlayerData.WallLayerMask);
+        IsTouchingWallLeft = Physics2D.Raycast
+            (transform.position, Vector2.left, PlayerData.WallDistanceCheck, PlayerData.WallLayerMask);
+        IsTouchingWallRight = Physics2D.Raycast
+            (transform.position, Vector2.right, PlayerData.WallDistanceCheck, PlayerData.WallLayerMask);
+        //Debug.Log("Touching wall left:" + IsTouchingWallLeft);
+        //Debug.Log("Touching wall right:" + IsTouchingWallRight);
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
         Gizmos.DrawLine (transform.position, 
-            transform.position + Vector3.down * PlayerData.GroundCheck);
+            transform.position + Vector3.down * PlayerData.GroundDistanceCheck);
+        Gizmos.DrawLine(transform.position,
+            transform.position + Vector3.right * PlayerData.WallDistanceCheck);
+        Gizmos.DrawLine(transform.position,
+            transform.position + Vector3.left * PlayerData.WallDistanceCheck);
     }
 
     private void OnTimerExpired()  // test method for timer

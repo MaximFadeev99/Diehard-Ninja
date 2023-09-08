@@ -16,19 +16,17 @@ public class StateMachine
 
     public void DoLogicUpdate() 
     {
-        SuperState newSuperState;
-
-        if (Player.IsGrounded)
+        if (Player.IsGrounded || Player.IsJumping)
         {
-            newSuperState = Player.GroundedSuperState;
-            CurrentSuperState = newSuperState;
-            CurrentState = newSuperState.SetState();
+            ChangeSuperState(Player.GroundedSuperState);
         }
-        else  if (Player.IsGrounded == false && Player.Rigidbody.velocity.y < 0) 
+        else if (Player.IsTouchingWallLeft || Player.IsTouchingWallRight || Player.IsWallJumping)
         {
-            newSuperState = Player.AirbornSuperState;
-            CurrentSuperState = newSuperState;
-            CurrentState = newSuperState.SetState();
+              ChangeSuperState(Player.WallTouchingSuperState);
+        }
+        else if (Player.Rigidbody.velocity.y < 0)
+        {
+            ChangeSuperState(Player.AirbornSuperState);
         }
 
         //Debug.Log(CurrentSuperState + "+" + CurrentSuperState.CurrentState);
@@ -43,5 +41,11 @@ public class StateMachine
     {
         CurrentSuperState = Player.GroundedSuperState;
         Player.GroundedSuperState.ChangeAwakeState();
+    }
+
+    private void ChangeSuperState(SuperState newSuperState) 
+    {
+        CurrentSuperState = newSuperState;
+        CurrentState = CurrentSuperState.SetState();
     }
 }

@@ -27,7 +27,7 @@ public class RunState : State
     {
         FlipCharacter();
 
-        NextXVelocity = InputHandler.MovementInput.x * 5;
+        NextXVelocity = InputHandler.MovementInput.x * PlayerData.RunSpeed;
         NextYVelocity = 0f;
         base.UpdatePhysicalMotion();     
     }
