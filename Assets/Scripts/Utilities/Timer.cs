@@ -11,7 +11,7 @@ public class Timer
     public bool IsActive { get; private set; } = false;
     public Action TimeIsUp;
 
-    public void StartTimer(float timeLag) 
+    public void Start(float timeLag) 
     {
         _timeLag = timeLag;
         _elapsedTime = 0f;

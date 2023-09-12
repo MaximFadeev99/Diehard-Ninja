@@ -31,6 +31,11 @@ public abstract class State
         Player.Animator.Play(AnimationCode);
     }
 
+    public virtual void Exit() 
+    {
+        //Player.Animator.StopPlayback();
+    }
+
     public abstract State TryChange();
 
     public virtual void UpdatePhysicalMotion() 
@@ -42,13 +47,17 @@ public abstract class State
 
     public void FlipCharacter() 
     {
-        if (Player.InputHandler.MovementInput.x < 0)
+        if (InputHandler.MovementInput.x < 0)
         {
             Player.SpriteRenderer.flipX = true;
+            Player.IsFacingRight = false;
         }
         else
         {
             Player.SpriteRenderer.flipX = false;
+            Player.IsFacingRight = true;
         }
+
+       // Debug.Log("IsFacingRight: " + Player.IsFacingRight);
     }
 }

@@ -9,12 +9,20 @@ public class PlayerData : MonoBehaviour
     public float GroundDistanceCheck { get; private set; } = 0.7f;
     public float WallDistanceCheck { get; private set; } = 0.6f;
     public float JumpVelocity { get; private set; } = 3f;
-
     public float JumpDuration { get; private set; } = 0.5f;
+    public float CoyoteJumpTime { get; private set; } = 0.2f;
+    public float DeflectionCoolDownTime { get; private set; } = 0.1f;
+    public float DashCoolDownTime { get; private set; } = 0.1f;
+    public float DashHoldTime { get; private set; } = 3f;
+    public float DashDuration { get; private set; } = 0.2f;
     public LayerMask WallLayerMask { get; private set; } 
+    public LayerMask EnemyLayerMask { get; private set; }
+    public LayerMask NothingLayerMask { get; private set; }
 
     private void Awake()
     {
         WallLayerMask = LayerMask.GetMask("Walls");
+        EnemyLayerMask = LayerMask.GetMask("Enemy");
+        NothingLayerMask = LayerMask.GetMask("Nothing");
     }
 }

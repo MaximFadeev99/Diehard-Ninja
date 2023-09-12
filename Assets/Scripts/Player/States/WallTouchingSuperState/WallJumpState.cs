@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Windows;
 
@@ -7,6 +8,7 @@ public class WallJumpState : State
 {
     private float _xInput;
     private float _jumpXVelocity;
+    private bool _wasTouchingWallRight;
 
     public WallJumpState(Player player, string animationCode) : base(player, animationCode) {}
 
@@ -14,16 +16,20 @@ public class WallJumpState : State
     {
         base.Enter();
         _xInput = InputHandler.MovementInput.x;
+        _wasTouchingWallRight = Player.IsTouchingWallRight;
+        Player.AnnulAndPauseWallRaycats();
     }
 
     public override State TryChange()
     {
-        if (Player.IsWallJumping || Rigidbody.velocity.y > 0)
+        if (Player.IsWallJumping)
         {
             return this;
         }
-
-        return null;
+        else 
+        {
+            return Player.WallTouchingSuperState.WallSlidingState;
+        }
     }
 
     public override void UpdatePhysicalMotion()
@@ -31,25 +37,11 @@ public class WallJumpState : State
         float wallJumpVelocity = 7f;
         float wallJumpXVelocity;
 
-        wallJumpXVelocity = Player.IsTouchingWallRight ? -wallJumpVelocity : wallJumpVelocity;
+        wallJumpXVelocity = _wasTouchingWallRight ? -wallJumpVelocity : wallJumpVelocity;
+        Player.IsFacingRight = _wasTouchingWallRight ? false : true;
         NextXVelocity = wallJumpXVelocity;
         NextYVelocity = Player.IsWallJumping ? PlayerData.JumpVelocity : Rigidbody.velocity.y;
         base.UpdatePhysicalMotion();
-
-        //if (Player.IsWallJumping)
-        //{
-        //    _jumpXVelocity = _xInput != 0f ?
-        //        _xInput * jumpForwardVelocityModifier : Rigidbody.velocity.x;
-
-        //    NextXVelocity = _jumpXVelocity;
-        //    NextYVelocity = PlayerData.JumpVelocity;
-        //    base.UpdatePhysicalMotion();
-        //}
-        //else
-        //{
-        //    NextXVelocity = _jumpXVelocity;
-        //    NextYVelocity = Rigidbody.velocity.y;
-        //    base.UpdatePhysicalMotion();
-        //}
+        Player.ResumeRaycasts();
     }
 }

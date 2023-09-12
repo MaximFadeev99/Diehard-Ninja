@@ -6,7 +6,6 @@ public class StateMachine
 {
     public SuperState CurrentSuperState { get; private set; }
     public State CurrentState { get; private set; }
-
     public Player Player { get; private set; }
 
     public StateMachine (Player player) 
@@ -16,13 +15,21 @@ public class StateMachine
 
     public void DoLogicUpdate() 
     {
-        if (Player.IsGrounded || Player.IsJumping)
+        if (Player.IsDead) 
+        {
+            ChangeSuperState(Player.DeadSuperState);
+        }
+        else if (Player.IsUsingAbility)
+        {
+            ChangeSuperState(Player.AbilitySuperState);
+        }
+        else if (Player.IsGrounded || Player.IsJumping)
         {
             ChangeSuperState(Player.GroundedSuperState);
         }
         else if (Player.IsTouchingWallLeft || Player.IsTouchingWallRight || Player.IsWallJumping)
         {
-              ChangeSuperState(Player.WallTouchingSuperState);
+            ChangeSuperState(Player.WallTouchingSuperState);
         }
         else if (Player.Rigidbody.velocity.y < 0)
         {
@@ -35,7 +42,11 @@ public class StateMachine
 
     public void DoPhysicsUpdate() => CurrentSuperState.CurrentState.UpdatePhysicalMotion();
 
-    public void Reset() => CurrentSuperState = Player.GroundedSuperState;
+    public void Reset()
+    {
+        CurrentSuperState = Player.GroundedSuperState;
+        CurrentState = Player.GroundedSuperState.AwakeState;
+    } 
 
     public void ExitAwakeState() 
     {

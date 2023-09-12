@@ -9,24 +9,31 @@ public class RunState : State
 
     public override State TryChange()
     {
-        if (InputHandler.MovementInput.x == 0 && Player.IsJumping == false)
+        if (Player.IsBlocking)
         {
-            return Player.GroundedSuperState.IdleState;
+            return Player.GroundedSuperState.BlockState;
+        }
+        else if (Player.IsAttacking) 
+        {
+            return Player.GroundedSuperState.AttackState;
         }
         else if (Player.IsJumping)
         {
             return Player.GroundedSuperState.JumpState;
         }
-        else 
+        else if (InputHandler.MovementInput.x != 0 && Player.IsJumping == false)
         {
             return this;
+        }
+        else
+        {
+            return Player.GroundedSuperState.IdleState;
         }
     }
 
     public override void UpdatePhysicalMotion()
     {
         FlipCharacter();
-
         NextXVelocity = InputHandler.MovementInput.x * PlayerData.RunSpeed;
         NextYVelocity = 0f;
         base.UpdatePhysicalMotion();     

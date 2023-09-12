@@ -10,15 +10,23 @@ public class IdleState : State
 
     public override State TryChange()
     {
-        if (InputHandler.MovementInput.x != 0 && Player.IsJumping == false)
+        if (Player.IsBlocking)
         {
-            return Player.GroundedSuperState.RunState;
+            return Player.GroundedSuperState.BlockState;
+        }
+        else if (Player.IsAttacking) 
+        {
+            return Player.GroundedSuperState.AttackState;
         }
         else if (Player.IsJumping)
         {
             return Player.GroundedSuperState.JumpState;
         }
-        else 
+        else if (InputHandler.MovementInput.x != 0 && Player.IsJumping == false)
+        {
+            return Player.GroundedSuperState.RunState;
+        }
+        else
         {
             return this;
         }

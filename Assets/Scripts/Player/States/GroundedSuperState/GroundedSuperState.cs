@@ -8,7 +8,8 @@ public class GroundedSuperState : SuperState
     public IdleState IdleState { get; private set; }
     public RunState RunState { get; private set; }
     public JumpState JumpState { get; private set; }
-    public bool isJumping { get; protected set; } = false;
+    public BlockState BlockState { get; private set; }
+    public AttackState AttackState { get; private set; }
 
     public GroundedSuperState(StateMachine stateMachine) : base(stateMachine) 
     {
@@ -16,8 +17,11 @@ public class GroundedSuperState : SuperState
         IdleState = new IdleState(Player, "Idle");
         RunState = new RunState(Player, "Run");
         JumpState = new JumpState(Player, "Jump");
+        BlockState = new BlockState(Player, "Block");
+        AttackState = new AttackState(Player, "Attack");
         DefaultState = AwakeState;
-        EnterDefaultState();
+        CurrentState = DefaultState;
+        CurrentState.Enter();
     }
       
     public override State SetState()

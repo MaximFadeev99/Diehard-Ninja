@@ -8,7 +8,6 @@ public abstract class SuperState
     public StateMachine StateMachine;
     protected Player Player;
     public State CurrentState { get; protected set; } 
-    protected bool needTransition;
 
     public SuperState(StateMachine stateMachine)
     {
@@ -24,16 +23,11 @@ public abstract class SuperState
 
         if (newState != StateMachine.CurrentState)
         {
+            StateMachine.CurrentState.Exit();
             newState.Enter();
             CurrentState = newState;
         }
 
         return newState;
-    }
-
-    public void EnterDefaultState() 
-    {
-        CurrentState = DefaultState;
-        DefaultState.Enter();
     }
 }

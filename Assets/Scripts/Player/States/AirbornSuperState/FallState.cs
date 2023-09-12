@@ -5,7 +5,7 @@ using UnityEngine;
 public class FallState : State
 {
     private float _startXVelocity;
-    private float _gravityAmplifier = 0.1f;
+    
 
     public FallState(Player player, string animationCode) 
         : base(player, animationCode) {}
@@ -14,6 +14,7 @@ public class FallState : State
     {
         base.Enter();
         _startXVelocity = Rigidbody.velocity.x;
+        //Debug.Log("Start XVelocity: " + _startXVelocity);
     }
 
     public override State TryChange()
@@ -29,6 +30,7 @@ public class FallState : State
     public override void UpdatePhysicalMotion()
     {
         float fallXModifer = 0.1f;
+        float gravityAmplifier = 0.1f;
 
         if (InputHandler.MovementInput.x > 0)
         {
@@ -40,7 +42,7 @@ public class FallState : State
         }       
 
         NextXVelocity = _startXVelocity;
-        NextYVelocity = Rigidbody.velocity.y - _gravityAmplifier;
+        NextYVelocity = Rigidbody.velocity.y - gravityAmplifier;
         base.UpdatePhysicalMotion();       
     }
 }
