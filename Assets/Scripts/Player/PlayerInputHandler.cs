@@ -98,7 +98,7 @@ public class PlayerInputHandler : MonoBehaviour
         {
             Vector2 rawDashInput = context.ReadValue<Vector2>();
             DashDirectionInput = _camera.ScreenToWorldPoint(rawDashInput) - _player.transform.position;
-            DashDirectionInput.Normalize();
+            DashDirectionInput = DashDirectionInput.normalized;
         }
     }
 

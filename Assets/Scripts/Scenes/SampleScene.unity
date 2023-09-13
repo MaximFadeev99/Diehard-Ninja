@@ -3978,6 +3978,10 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6847904959478778209, guid: 6f0806006cc44d944aca99e6873ff56f, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 7835065331994333049, guid: 6f0806006cc44d944aca99e6873ff56f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.74

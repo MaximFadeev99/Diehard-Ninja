@@ -6,13 +6,13 @@ public abstract class SuperState
 {
     public State DefaultState { get; protected set; }
     public StateMachine StateMachine;
-    protected Player Player;
+    //protected Player Player;
     public State CurrentState { get; protected set; } 
 
     public SuperState(StateMachine stateMachine)
     {
         StateMachine = stateMachine;
-        Player = stateMachine.Player;
+        //Player = stateMachine.Player;
     }
 
     public virtual State SetState() 

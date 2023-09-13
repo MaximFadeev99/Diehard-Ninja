@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     #region Components 
     public Animator Animator { get; private set; }
     public PlayerInputHandler InputHandler {  get; private set; }
-    public StateMachine StateMachine { get; private set; }
+    public PlayerStateMachine PlayerStateMachine { get; private set; }
     public SpriteRenderer SpriteRenderer { get; private set; }
     public Rigidbody2D Rigidbody { get; private set; }
     public PlayerData PlayerData { get; private set; }
@@ -17,11 +17,11 @@ public class Player : MonoBehaviour
     #endregion
 
     #region PossibleSuperStates
-    public GroundedSuperState GroundedSuperState { get; private set; }
-    public AirbornSuperState AirbornSuperState { get; private set; }
-    public WallTouchingSuperState WallTouchingSuperState { get; private set; }
-    public AbilitySuperState AbilitySuperState { get; private set; }
-    public DeadSuperState DeadSuperState { get; private set; }
+    //public GroundedSuperState GroundedSuperState { get; private set; }
+    //public AirbornSuperState AirbornSuperState { get; private set; }
+    //public WallTouchingSuperState WallTouchingSuperState { get; private set; }
+    //public AbilitySuperState AbilitySuperState { get; private set; }
+    //public DeadSuperState DeadSuperState { get; private set; }
     #endregion
 
     #region Utilities 
@@ -102,13 +102,13 @@ public class Player : MonoBehaviour
         _timers.Add(_attackTimer);
         _timers.Add(_deflectionCoolDownTimer);
         _timers.Add(_dashTimer);
-        StateMachine = new StateMachine(this);
-        GroundedSuperState = new GroundedSuperState(StateMachine);
-        AirbornSuperState = new AirbornSuperState(StateMachine);
-        WallTouchingSuperState = new WallTouchingSuperState(StateMachine);
-        AbilitySuperState = new AbilitySuperState(StateMachine);
-        DeadSuperState = new DeadSuperState(StateMachine);
-        StateMachine.Reset();
+        PlayerStateMachine = new PlayerStateMachine(this);
+        //GroundedSuperState = new GroundedSuperState(StateMachine, this);
+        //AirbornSuperState = new AirbornSuperState(StateMachine, this);
+        //WallTouchingSuperState = new WallTouchingSuperState(StateMachine, this);
+        //AbilitySuperState = new AbilitySuperState(StateMachine, this);
+        //DeadSuperState = new DeadSuperState(StateMachine, this);
+        PlayerStateMachine.Reset();
         DoSurfaceRaycasts();
     }
 
@@ -154,19 +154,19 @@ public class Player : MonoBehaviour
         if (_areRaycastsPaused == false)
             DoSurfaceRaycasts();
 
-        StateMachine.DoLogicUpdate();
+        PlayerStateMachine.DoLogicUpdate();
 
     }
 
     private void FixedUpdate()
     {
-        StateMachine.DoPhysicsUpdate();
+        PlayerStateMachine.DoPhysicsUpdate();
         //Debug.Log(StateMachine.CurrentSuperState.CurrentState + " + " + Rigidbody.velocity);
     }
 
     public void ExitAwakeState() 
     {
-        StateMachine.ExitAwakeState();
+        PlayerStateMachine.ExitAwakeState();
     }
 
     private void OnJumpButtonPushed() 
@@ -295,10 +295,13 @@ public class Player : MonoBehaviour
     }
     private void ResetDashOnHold() 
     {
-        IsDashOnHold = false;
-        _dashTimer.TimeIsUp -= ResetDashOnHold;
-        _dashTimer.TimeIsUp += EndDashAbility;
-        _dashTimer.Start(PlayerData.DashDuration);
+        if (IsDashing) 
+        {
+            IsDashOnHold = false;
+            _dashTimer.TimeIsUp -= ResetDashOnHold;
+            _dashTimer.TimeIsUp += EndDashAbility;
+            _dashTimer.Start(PlayerData.DashDuration);      
+        }       
     } 
 
     public void EndDashAbility()
@@ -306,8 +309,9 @@ public class Player : MonoBehaviour
         IsDashing = false;
         IsUsingAbility = false;
         _dashTimer.TimeIsUp -= EndDashAbility;
-        _dashTimer.TimeIsUp += ResetDashAbility;
+        PlayerStateMachine.AbilitySuperState.DashState.ForceExit();
         _dashTimer.Start(PlayerData.DashCoolDownTime);
+        _dashTimer.TimeIsUp += ResetDashAbility;
     }
 
     private void ResetDashAbility() 
@@ -317,5 +321,5 @@ public class Player : MonoBehaviour
     }
 
 
-    private void ResetAttackTimer() => GroundedSuperState.AttackState.ResetTimer();
+    private void ResetAttackTimer() => PlayerStateMachine.GroundedSuperState.AttackState.ResetTimer();
 }
