@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8176012300379596840}
   - component: {fileID: 7302324104908472192}
   - component: {fileID: 5356980989923502169}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1916360843
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 1467170162, guid: 5cc20376b87ed444ab8dbef8c0cda608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -352,6 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f07a35dacc189db48a7f0822053eef33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDead: 0
   IsGroundedInPreviousFrame: 1
   IsCoyoteTimeActive: 0
   IsFacingRight: 1
@@ -379,7 +380,7 @@ GameObject:
   - component: {fileID: 7020770106114717962}
   - component: {fileID: 6847904959478778209}
   - component: {fileID: 8281587022883259067}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DashAfterImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -418,7 +419,7 @@ ParticleSystem:
   emitterVelocityMode: 0
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -484,7 +485,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.03
+      scalar: 0.1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -5207,7 +5208,7 @@ GameObject:
   - component: {fileID: 342147590874378804}
   - component: {fileID: 5587492089829374860}
   - component: {fileID: 4236444531937092884}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DashDirectionIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}

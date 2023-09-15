@@ -38,11 +38,6 @@ public abstract class PlayerState : State
         //Player.Animator.StopPlayback();
     }
 
-    public override State TryChange()
-    { 
-        return null; 
-    }
-
     public override void UpdatePhysicalMotion() 
     {
         Rigidbody.velocity = new Vector2(NextXVelocity, NextYVelocity);

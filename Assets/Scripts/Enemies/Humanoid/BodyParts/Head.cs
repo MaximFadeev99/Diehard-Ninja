@@ -3,30 +3,16 @@ using UnityEngine;
 public class Head : MonoBehaviour 
 {
     private Humanoid _humanoid;
-    private float _yPositionOffest;
+    private Vector3 _localPosition = new Vector3 (-0.02565908f, 0.9213767f, 0f);
 
     private void Awake()
     {
         _humanoid = GetComponentInParent<Humanoid>();
     }
 
-    private void OnEnable()
-    {
-        _yPositionOffest = transform.position.y - _humanoid.transform.position.y;
-    }
-
     private void Update()
     {
-        UpholdPosition();
+        if ( _humanoid.IsDead == false && transform.localPosition != _localPosition ) 
+            transform.localPosition = _localPosition;
     }
-
-    private void UpholdPosition()
-    {
-        if (_humanoid.IsDead == false)
-        {
-            transform.position = new Vector2
-                (_humanoid.transform.position.x, _humanoid.transform.position.y + _yPositionOffest);
-        }
-    }
-
 }

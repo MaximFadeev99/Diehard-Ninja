@@ -12,15 +12,20 @@ public class HumanoidStateMachine : StateMachine
     {
         Humanoid = humanoid;
         GroundedSuperState = new GroundedSuperState(this, Humanoid);
+        Reset();
     }
 
     public override void DoLogicUpdate()
     {
-        
+        if (Humanoid.IsDead == false) 
+        {
+            ChangeSuperState(GroundedSuperState);
+        }
     }
 
     public override void Reset()
     {
-        
+        CurrentSuperState = GroundedSuperState;
+        CurrentState = GroundedSuperState.SearchState;
     }
 }
