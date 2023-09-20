@@ -12,8 +12,8 @@ namespace HumanoidNS
         public GroundedSuperState(HumanoidStateMachine stateMachine, Humanoid humanoid) : 
             base(stateMachine, humanoid) 
         {
-            SearchState = new SearchState(stateMachine, "Idle");
-            AttackState = new AttackState(stateMachine, Humanoid.WeaponData._animationCode);
+            SearchState = new SearchState(stateMachine, string.Empty);
+            AttackState = new AttackState(stateMachine, string.Empty);
             DefaultState = SearchState;
             CurrentState = DefaultState;
         }

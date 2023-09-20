@@ -1,18 +1,12 @@
 using UnityEngine;
 
-public class Head : MonoBehaviour 
+public class Head : BodyPart 
 {
-    private Humanoid _humanoid;
-    private Vector3 _localPosition = new Vector3 (-0.02565908f, 0.9213767f, 0f);
-
-    private void Awake()
+    protected override void Awake()
     {
-        _humanoid = GetComponentInParent<Humanoid>();
+        _localPosition = new Vector3(-0.02565908f, 0.9213767f, 0f);
+        base.Awake();
     }
 
-    private void Update()
-    {
-        if ( _humanoid.IsDead == false && transform.localPosition != _localPosition ) 
-            transform.localPosition = _localPosition;
-    }
+    protected override void Start() {}
 }

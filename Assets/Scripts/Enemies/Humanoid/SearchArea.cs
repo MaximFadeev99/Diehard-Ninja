@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,35 +12,42 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
     private Player _player;
     private float _alertArea;
     private bool _isRaycastRequired = false;
+    private bool _isCheckingFlip;
     private ContactFilter2D _contactFilter;
+    //private bool _isFacingRight;
+    private float _offsetModifier = 0.7f;
+    private float _currentOffsetModifier;
 
-    public void LookForPlayer()
+    public Action<bool> PlayerGotBehind;
+
+    public void Update()
     {
         if (_isRaycastRequired)
             DoRaycast();
 
-        //if (_player != null) 
-        //{
-        //    CheckAlertArea();
-        //}   
+        if (_player != null) 
+            CheckIfFlipRequired();   
     }
 
     public void Set(Humanoid humanoid, float searchAreaWidth, float searchAreaHight) 
     {
-        float offsetModifier = 0.7f;
 
         _humanoid = humanoid;
+        //_isFacingRight = isFacingRight;
         BoxCollider2D = GetComponent<BoxCollider2D>();
         BoxCollider2D.isTrigger = true;
         BoxCollider2D.size = new Vector2(searchAreaWidth, searchAreaHight);
-        BoxCollider2D.offset = new Vector2(BoxCollider2D.size.x / 2f * offsetModifier, 0f);
-        //_alertArea = alertArea;
+        _currentOffsetModifier = _humanoid.IsFacingRightFirst ? _offsetModifier : -_offsetModifier;
+        BoxCollider2D.offset = new Vector2(BoxCollider2D.size.x / 2f * _currentOffsetModifier, 0f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out _player))        
-            _isRaycastRequired = true;        
+        if (collision.TryGetComponent(out _player)) 
+        {
+            _isRaycastRequired = true;
+            _isCheckingFlip = true;
+        }        
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -47,6 +55,7 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
         if (collision.TryGetComponent(out _player)) 
         {
             _isRaycastRequired = false;
+            _isCheckingFlip = false;
             _player = null;
             _humanoid.SetPlayer(_player);
         } 
@@ -54,6 +63,7 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
 
     private void DoRaycast() 
     {
+        //bool isPlayerRight;
         int playerLayer = 8;
         int wallLayer = 6;
         Vector2 raycastDirection = (Vector2)_player.transform.position - (Vector2)transform.position; 
@@ -72,34 +82,22 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
             else if (_hits[i].collider.gameObject.layer == playerLayer) 
             {
                 _isRaycastRequired = false;
+                //isPlayerRight = _player.transform.position.x >= transform.position.x ? true : false;
                 _humanoid.SetPlayer(_player);
-                print("Player is found and set");
+                //print("Player is found and set");
                 return;
             }
         }       
     }
 
-    //private void CheckAlertArea() 
-    //{
-    //    Vector2 playerPosition = _player.transform.position;
-    //    Vector2 searchAreaCenter = transform.position;
-
-    //    if (Vector2.Distance(playerPosition, searchAreaCenter) < _alertArea
-    //        && _humanoid.Player == null)
-    //    {
-    //        _humanoid.SetPlayer(_player);
-    //        //print("Player in Alert Area");
-    //    }
-    //}
-
-    //private void OnDrawGizmos()
-    //{
-    //    float gizmoDrawModifier = 0.85f;
-
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireCube(transform.position, new Vector3
-    //        (BoxCollider2D.size.x * gizmoDrawModifier, BoxCollider2D.size.y * gizmoDrawModifier, 0f));
-    //    Gizmos.DrawWireCube(transform.position, new Vector3
-    //        (_alertArea, _alertArea, 0f));
-    //}
+    private void CheckIfFlipRequired() 
+    {
+            if ((_humanoid.IsFacingRight && _player.transform.position.x < transform.position.x) ||
+            (_humanoid.IsFacingRight == false && _player.transform.position.x > transform.position.x))
+        {
+            _currentOffsetModifier = -_currentOffsetModifier;
+            BoxCollider2D.offset = new Vector2(BoxCollider2D.size.x / 2f * _currentOffsetModifier, 0f);
+            PlayerGotBehind.Invoke(!_humanoid.IsFacingRight);
+        }
+    }
 }

@@ -2,31 +2,74 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public class Weapon : BodyPart
 {
-    private Vector3 _localPosition;
-    private Humanoid _humanoid;
-    private WeaponData _weaponData;
-    private LeftHand _leftHand;
-    private SpriteRenderer _spriteRenderer;
-    private Sprite _sprite;
+    private BulletSpawnPoint _bulletSpawnPoint;
+    private BulletTrajectoryPoint _bulletTrajectoryPoint;
+    private Coroutine _fireCoroutine;
+    private int _bulletsFired;
 
-    private void Awake()
+    public override void Flip(bool isFlippingRight)
     {
-        _humanoid = GetComponentInParent<Humanoid>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _leftHand = _humanoid.LeftHand;
-        _weaponData = _humanoid.WeaponData;
-        _sprite = _weaponData._weaponSprite;
-        _spriteRenderer.sprite = _sprite;
-        _localPosition = _weaponData._weaponPosition;
-        //_leftHand.gameObject.SetActive(_weaponData._isLeftHandVisible);
+        base.Flip(isFlippingRight);
+        //_localPosition = isFlippingRight ? 
+        //    new Vector3(-WeaponData._weaponPosition.x, WeaponData._weaponPosition.y, WeaponData._weaponPosition.z)
+        //    : WeaponData._weaponPosition;
+
+        _localPosition = isFlippingRight ?
+            WeaponData._weaponPosition :
+            new Vector3(-WeaponData._weaponPosition.x, WeaponData._weaponPosition.y, WeaponData._weaponPosition.z);
     }
 
-    private void Update()
+    protected override void OnEnable()
     {
-        if (_humanoid.IsDead == false && transform.localPosition != _localPosition)
-            transform.localPosition = _localPosition;
+        base.OnEnable();       
     }
 
+    protected override void Awake()
+    {
+        base.Awake(); 
+        _bulletSpawnPoint = GetComponentInChildren<BulletSpawnPoint>();
+        _bulletTrajectoryPoint = GetComponentInChildren<BulletTrajectoryPoint>();
+        SpriteRenderer.sprite = WeaponData._weaponSprite;
+    }
+
+    public void StartFireCoroutine() 
+    {
+        _fireCoroutine = StartCoroutine(Fire());
+    }
+
+    public void EndFireCoroutine() 
+    {
+        if( _fireCoroutine != null )
+            StopCoroutine( _fireCoroutine );
+    }
+
+    private IEnumerator Fire()
+    {
+        var aimTime = new WaitForSeconds(WeaponData._aimTime);
+        var timeBetweenBullers = new WaitForSeconds(WeaponData._timeBetweenBullets);
+        Vector2 flyDirection;
+        Vector2 rotationDirection;
+        float bulletRotation;
+
+        _bulletsFired = 0;
+
+        while (true) 
+        {
+            yield return aimTime;
+
+            while (_bulletsFired < WeaponData._bulletsPerShot) 
+            {
+                flyDirection = _bulletSpawnPoint.transform.position - _bulletTrajectoryPoint.transform.position;
+                rotationDirection = Humanoid.IsFacingRight ? -flyDirection : flyDirection;
+                bulletRotation = Mathf.Atan2(rotationDirection.y, rotationDirection.x) * Mathf.Rad2Deg;
+                _bulletSpawnPoint.GenerateBullet(flyDirection, bulletRotation);
+                _bulletsFired++;
+                yield return timeBetweenBullers;
+            }
+
+            _bulletsFired = 0;       
+        }
+    }
 }
