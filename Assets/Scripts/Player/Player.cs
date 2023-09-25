@@ -1,16 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamagable
 {
+    [SerializeField] public LayerMask LayerMask;
+
     #region Components 
     public Animator Animator { get; private set; }
     public PlayerInputHandler InputHandler {  get; private set; }
     public PlayerStateMachine PlayerStateMachine { get; private set; }
     public SpriteRenderer SpriteRenderer { get; private set; }
     public Rigidbody2D Rigidbody { get; private set; }
+    public AudioSource AudioSource { get; private set; }
     public PlayerData PlayerData { get; private set; }
     public DashDirectionIndicator DashDirectionIndicator { get; private set; }
     public ParticleSystem DashParticleSystem { get; private set; }
@@ -80,15 +84,22 @@ public class Player : MonoBehaviour
     private bool _areRaycastsPaused = false;
     private bool _isInvincible = false;
     private float _attackResetTime = 1f;
+    private float _maxHealth = 200f;
+    public float CurrentHealth { get; private set; }
 
     #endregion
 
+    public Action<float> HealthChanged;
+    public Action Died;
+
     private void Awake()
     {
+        CurrentHealth = _maxHealth;
         Animator = GetComponent<Animator>();
         InputHandler = GetComponent<PlayerInputHandler>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
         Rigidbody = GetComponent<Rigidbody2D>();
+        AudioSource = GetComponent<AudioSource>();
         PlayerData = GetComponent<PlayerData>();
         DashDirectionIndicator = transform.Find("DashDirectionIndicator").GetComponent<DashDirectionIndicator>();
         DashParticleSystem = transform.Find("DashAfterImage").GetComponent<ParticleSystem>();
@@ -221,6 +232,8 @@ public class Player : MonoBehaviour
             transform.position + Vector3.right * PlayerData.WallDistanceCheck);
         Gizmos.DrawLine(transform.position,
             transform.position + Vector3.left * PlayerData.WallDistanceCheck);
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + 0.3f, transform.position.y, 0f),
+            new Vector3(0.1f, 1.3f, 0f));
     }
 
     private void OnTimerExpired()  // test method for timer
@@ -321,5 +334,21 @@ public class Player : MonoBehaviour
     }
 
 
-    private void ResetAttackTimer() => PlayerStateMachine.GroundedSuperState.AttackState.ResetTimer();
+    private void ResetAttackTimer() => PlayerStateMachine.GroundedSuperState.AttackState.ResetAttackTimer();
+
+    public void TakeDamage(float damage) 
+    {
+        if (_isInvincible == false) 
+        {
+            CurrentHealth -= damage;
+            HealthChanged?.Invoke(CurrentHealth);
+            print (CurrentHealth.ToString());
+        }
+
+        if (CurrentHealth <= 0) 
+        {
+            IsDead = true;
+            Died?.Invoke();
+        }
+    }
 }

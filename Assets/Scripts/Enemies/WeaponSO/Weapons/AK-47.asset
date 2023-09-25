@@ -17,9 +17,12 @@ MonoBehaviour:
   _leftHandPosition: {x: 0.44, y: 0.06, z: 0}
   _bulletSpawnPointPosition: {x: 1.1, y: 0.14, z: 0}
   _bulletTrajectoryPointPosition: {x: -0.172, y: 0.14, z: 0}
-  _weaponSprite: {fileID: -1356649825, guid: 89fa14cd53483104c9cb514c56c80aec, type: 3}
+  _mainSprite: {fileID: -1356649825, guid: 89fa14cd53483104c9cb514c56c80aec, type: 3}
+  _audioClip: {fileID: 8300000, guid: eb25c1d5cb1ce9645b97c998c0485ef1, type: 3}
+  _audioClipVolume: 0.7
   _isLeftHandVisible: 1
   _bullet: {fileID: 3456171444169144500, guid: 6a661d99d375c98419771153d64b68cc, type: 3}
   _aimTime: 3
   _bulletsPerShot: 3
   _timeBetweenBullets: 0.2
+  _recoil: 10

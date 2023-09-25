@@ -35,14 +35,20 @@ namespace HumanoidNS
             ActivateAndFlip(_bulletTrajectoryPoint);
 
             if (Humanoid.WeaponData._isLeftHandVisible)
+            {
                 ActivateAndFlip(_leftHand);
+            }
+            else 
+            {
+               _leftHand.gameObject.SetActive(false);
+            }
 
             _weapon.StartFireCoroutine();
         }
 
         public override State TryChange()
         {
-            if (Humanoid.Player != null)
+            if (Humanoid.IsPlayerInRange && Humanoid.Player.IsDead == false)
             {               
                 return this;
             }

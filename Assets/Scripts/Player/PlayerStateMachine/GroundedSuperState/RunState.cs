@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class RunState : PlayerState
 {
+    private AudioSource _audioSource;
+    private AudioClip _audioClip;
+
     public RunState(PlayerStateMachine playerStateMachine, string animationCode) 
-        : base(playerStateMachine, animationCode) {}
+        : base(playerStateMachine, animationCode)     
+    {
+        _audioSource = Player.AudioSource;
+        _audioClip = Player.PlayerData.RuninngSound;
+    }
 
     public override State TryChange()
     {
@@ -31,11 +38,25 @@ public class RunState : PlayerState
         }
     }
 
+    public override void Enter()
+    {
+        base.Enter();
+        _audioSource.clip = _audioClip;
+        _audioSource.volume = 1f;
+        _audioSource.loop = true;
+        _audioSource.Play();
+    }
+
     public override void UpdatePhysicalMotion()
     {
         FlipCharacter();
         NextXVelocity = InputHandler.MovementInput.x * PlayerData.RunSpeed;
         NextYVelocity = 0f;
         base.UpdatePhysicalMotion();     
+    }
+
+    public override void Exit()
+    {
+        _audioSource.Stop();
     }
 }

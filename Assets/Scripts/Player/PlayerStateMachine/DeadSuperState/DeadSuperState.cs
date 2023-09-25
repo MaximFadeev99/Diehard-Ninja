@@ -13,10 +13,4 @@ public class DeadSuperState : PlayerSuperState
         DefaultState = DeadState;
         CurrentState = DefaultState;
     }
-
-    public override State SetState()
-    {
-        return base.SetState();
-    }
-
 }

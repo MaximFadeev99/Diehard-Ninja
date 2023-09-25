@@ -25,7 +25,7 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
         if (_isRaycastRequired)
             DoRaycast();
 
-        if (_player != null) 
+        if (_humanoid.IsPlayerInRange) 
             CheckIfFlipRequired();   
     }
 
@@ -33,6 +33,7 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
     {
 
         _humanoid = humanoid;
+        _player = _humanoid.Player;
         //_isFacingRight = isFacingRight;
         BoxCollider2D = GetComponent<BoxCollider2D>();
         BoxCollider2D.isTrigger = true;
@@ -43,7 +44,7 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out _player)) 
+        if (collision.TryGetComponent(out Player player)) 
         {
             _isRaycastRequired = true;
             _isCheckingFlip = true;
@@ -52,12 +53,11 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out _player)) 
+        if (collision.TryGetComponent(out Player player)) 
         {
             _isRaycastRequired = false;
             _isCheckingFlip = false;
-            _player = null;
-            _humanoid.SetPlayer(_player);
+            _humanoid.SetPlayerInRange(false);
         } 
     }
 
@@ -83,7 +83,7 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
             {
                 _isRaycastRequired = false;
                 //isPlayerRight = _player.transform.position.x >= transform.position.x ? true : false;
-                _humanoid.SetPlayer(_player);
+                _humanoid.SetPlayerInRange(true);
                 //print("Player is found and set");
                 return;
             }
@@ -92,7 +92,7 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
 
     private void CheckIfFlipRequired() 
     {
-            if ((_humanoid.IsFacingRight && _player.transform.position.x < transform.position.x) ||
+        if ((_humanoid.IsFacingRight && _player.transform.position.x < transform.position.x) ||
             (_humanoid.IsFacingRight == false && _player.transform.position.x > transform.position.x))
         {
             _currentOffsetModifier = -_currentOffsetModifier;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,9 @@ public class Weapon : BodyPart
     private BulletTrajectoryPoint _bulletTrajectoryPoint;
     private Coroutine _fireCoroutine;
     private int _bulletsFired;
+    private AudioSource _audioSource;
+
+    public Action BulletFired;
 
     public override void Flip(bool isFlippingRight)
     {
@@ -31,7 +35,11 @@ public class Weapon : BodyPart
         base.Awake(); 
         _bulletSpawnPoint = GetComponentInChildren<BulletSpawnPoint>();
         _bulletTrajectoryPoint = GetComponentInChildren<BulletTrajectoryPoint>();
-        SpriteRenderer.sprite = WeaponData._weaponSprite;
+        _audioSource = GetComponent<AudioSource>();
+        SpriteRenderer.sprite = WeaponData._mainSprite;
+        _audioSource.clip = WeaponData._audioClip;
+        _audioSource.volume = WeaponData._audioClipVolume;
+        _audioSource.loop = false;
     }
 
     public void StartFireCoroutine() 
@@ -65,7 +73,9 @@ public class Weapon : BodyPart
                 rotationDirection = Humanoid.IsFacingRight ? -flyDirection : flyDirection;
                 bulletRotation = Mathf.Atan2(rotationDirection.y, rotationDirection.x) * Mathf.Rad2Deg;
                 _bulletSpawnPoint.GenerateBullet(flyDirection, bulletRotation);
+                _audioSource.Play();
                 _bulletsFired++;
+                BulletFired?.Invoke();
                 yield return timeBetweenBullers;
             }
 

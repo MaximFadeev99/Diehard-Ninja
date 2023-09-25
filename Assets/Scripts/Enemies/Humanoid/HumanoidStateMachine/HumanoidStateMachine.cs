@@ -7,17 +7,23 @@ public class HumanoidStateMachine : StateMachine
 {
     public Humanoid Humanoid { get; private set; }
     public GroundedSuperState GroundedSuperState { get; private set; }
+    public HumanoidNS.DeadSuperState DeadSuperState { get; private set; }
 
     public HumanoidStateMachine(Humanoid humanoid)
     {
         Humanoid = humanoid;
         GroundedSuperState = new GroundedSuperState(this, Humanoid);
+        DeadSuperState = new HumanoidNS.DeadSuperState(this, Humanoid);
         Reset();
     }
 
     public override void DoLogicUpdate()
     {
-        if (Humanoid.IsDead == false) 
+        if (Humanoid.IsDead)
+        {
+            ChangeSuperState(DeadSuperState);
+        }
+        else
         {
             ChangeSuperState(GroundedSuperState);
         }
@@ -27,5 +33,6 @@ public class HumanoidStateMachine : StateMachine
     {
         CurrentSuperState = GroundedSuperState;
         CurrentState = GroundedSuperState.SearchState;
+        CurrentState.Enter();
     }
 }

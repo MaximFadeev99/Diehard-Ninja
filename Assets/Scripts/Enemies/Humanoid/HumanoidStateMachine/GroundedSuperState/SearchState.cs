@@ -10,7 +10,6 @@ public class SearchState : HumanoidState
     private HumanoidData _humanoidData;
     private Tween _headMovement;
     private float _headRotation = 7f;
-    private Tween _handMovement;
 
     public Action<bool> PlayerGotBehind;
     
@@ -19,6 +18,7 @@ public class SearchState : HumanoidState
         _searchArea = Humanoid.SearchArea;
         _humanoidData = Humanoid.HumanoidData;
         _searchArea.Set(Humanoid,_humanoidData.SearchAreaWidth, _humanoidData.SearchAreaHeight);
+        _headRotation = Humanoid.IsFacingRight ? _headRotation : -_headRotation;
         _headMovement = Humanoid.Head.transform.DOLocalRotate(new Vector3(0f, 0f, _headRotation), 1f);
         _headMovement.SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
     }
@@ -30,10 +30,8 @@ public class SearchState : HumanoidState
     }
 
     public override State TryChange()
-    {
-        //_searchArea.LookForPlayer();       
-
-        if (Humanoid.Player == null)
+    {      
+        if (Humanoid.IsPlayerInRange == false || Humanoid.Player.IsDead)
         {
             return this;
         }

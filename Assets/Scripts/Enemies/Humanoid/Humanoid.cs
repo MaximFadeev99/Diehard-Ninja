@@ -3,28 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using HumanoidNS;
 
-public class Humanoid : MonoBehaviour
+public class Humanoid : MonoBehaviour, IDamagable
 {
     [SerializeField] private WeaponData _weaponData;
     [SerializeField] private bool _isFacingRightFirst;
+    [SerializeField] private Player _player;
+    [SerializeField] private float _maxHealth;
+
     public Animator Animator { get; private set; }
     public SpriteRenderer SpriteRenderer { get; private set; }
+    //public AudioSource AudioSource { get; private set; }
     public Head Head { get; private set; }
     public SpriteRenderer HeadRenderer { get; private set; }
     public HumanoidStateMachine HumanoidStateMachine { get; private set; }
     public HumanoidData HumanoidData { get; private set; }
     public SearchArea SearchArea { get; private set; }
+    public ParticleSystem DecapitationEffect { get; private set; }
 
-    private Player _player;
+
     public Player Player 
     { 
         get => _player;
 
-        private set 
-        {
-            if (_isPlayerChangeAllowed)
-                _player = value;
-        }
+        //private set 
+        //{
+        //    if (_isPlayerChangeAllowed)
+        //        _player = value;
+        //}
             
     }
     public RightHand RightHand { get; private set; }
@@ -32,19 +37,22 @@ public class Humanoid : MonoBehaviour
     public LeftHand LeftHand { get; private set; }
     public BulletSpawnPoint BulletSpawnPoint { get; private set; }
     public BulletTrajectoryPoint BulletTrajectoryPoint { get; private set; }
-    public bool IsDead { get; private set; } = false;
+    [SerializeField] public bool IsDead;
     public bool IsFacingRight { get; private set; }
 
     public WeaponData WeaponData => _weaponData;
     public bool IsFacingRightFirst => _isFacingRightFirst;
-    private bool _isPlayerChangeAllowed;
+    public bool IsPlayerInRange { get; private set; } = false;
+    public float CurrentHealth { get; private set; }
 
     private void Awake()
     {
+        CurrentHealth = _maxHealth;
         HumanoidData = GetComponent<HumanoidData>();
         Animator = GetComponent<Animator>();
         SearchArea = GetComponentInChildren<SearchArea>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
+        DecapitationEffect = GetComponentInChildren<ParticleSystem>();
         Head = GetComponentInChildren<Head>();
         RightHand = GetComponentInChildren<RightHand>();
         Weapon = RightHand.GetComponentInChildren<Weapon>();
@@ -83,17 +91,30 @@ public class Humanoid : MonoBehaviour
         HumanoidStateMachine.DoPhysicsUpdate();
     }
 
-    public void SetPlayer(Player player) 
+    public void SetPlayerInRange(bool isPlayerInRange) 
     {
-        _isPlayerChangeAllowed = true;
-        Player = player;
-        _isPlayerChangeAllowed = false;
+        IsPlayerInRange = isPlayerInRange;
     }
 
     private void Flip(bool isFlippingRight)
     {
         SpriteRenderer.flipX = !isFlippingRight;
         IsFacingRight = isFlippingRight;
+    }
+
+    public void TakeDamage(float damage) 
+    {
+        CurrentHealth -= damage;
+
+        if (CurrentHealth <= 0) 
+        {
+            IsDead = true;
+        }
+    }
+
+    public void DestroyMe() 
+    {
+        Destroy(gameObject);
     }
 
 }

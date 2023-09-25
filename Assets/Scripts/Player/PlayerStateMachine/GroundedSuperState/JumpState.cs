@@ -5,14 +5,24 @@ using UnityEngine;
 public class JumpState : PlayerState
 {
     private float _xInput;
+    private AudioSource _audioSource;
+    private AudioClip _audioClip;
 
     public JumpState(PlayerStateMachine playerStateMachine, string animationCode) 
-        : base(playerStateMachine, animationCode) { }
+        : base(playerStateMachine, animationCode) 
+    {
+        _audioSource = Player.AudioSource;
+        _audioClip = Player.PlayerData.JumpingSound;
+    }
 
 
     public override void Enter()
     {
         base.Enter();
+        _audioSource.clip = _audioClip;
+        _audioSource.volume = 0.4f;
+        _audioSource.loop = false;
+        _audioSource.Play();
         _xInput = InputHandler.MovementInput.x;       
     }
 

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sprite: {fileID: 601139676, guid: 4208a3e027b793845a3ed49642066eb2, type: 3}
   _flySpeed: 15
+  _damage: 1
