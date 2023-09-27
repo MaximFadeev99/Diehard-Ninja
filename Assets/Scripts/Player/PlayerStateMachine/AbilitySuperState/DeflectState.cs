@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Collections;
 using UnityEngine;
 
 public class DeflectState : PlayerState
@@ -8,20 +6,17 @@ public class DeflectState : PlayerState
     private List<Collider2D> _results = new();
     private ContactFilter2D _attackFilter = new();
     
-    public DeflectState(PlayerStateMachine playerStateMachine,string animationCode) 
+    public DeflectState(PlayerStateMachine playerStateMachine,int animationCode) 
         : base(playerStateMachine, animationCode) 
     {
         _attackFilter.SetLayerMask(PlayerData.EnemyLayerMask);
-        _attackFilter.useLayerMask = true; 
         _attackFilter.useTriggers = true;
     }
-
 
     public override void Enter()
     {
         base.Enter();
         Player.ActivateInvincibilty();        
-        //Debug.Log ("Start XVelocity: " +  _startXVelocity);
     }
 
     public override State TryChange()
@@ -45,7 +40,6 @@ public class DeflectState : PlayerState
         UpdateVelocity();
         DealDamageAndDeflect();
     }
-
 
     public override void Exit()
     {
@@ -75,7 +69,8 @@ public class DeflectState : PlayerState
     private void DealDamageAndDeflect() 
     {
         float attackAreaRadius = 1f;
-        float increasedDamage = PlayerData.BasicDamage * 3f;
+        float damageModifier = 3f;
+        float increasedDamage = PlayerData.BasicDamage * damageModifier;
         List<Collider2D> currentAttackResults = new();
 
         Physics2D.OverlapCircle(Player.transform.position, attackAreaRadius, _attackFilter, currentAttackResults);

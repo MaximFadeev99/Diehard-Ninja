@@ -1,16 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Player))]
+
 public class PlayerInputHandler : MonoBehaviour
-{
-    private Player _player;
-    private Camera _camera;
-    public Vector2 MovementInput { get; private set; }
-    public Vector2 DashDirectionInput { get; private set; }
+{   
     public Action JumpButtonPushed;
     public Action JumpButtonReleased;
     public Action MainAttackButtonPushed;
@@ -18,10 +13,13 @@ public class PlayerInputHandler : MonoBehaviour
     public Action DashButtonPushed;
     public Action DashButtonReleased;
 
-    public bool IsBlocking { get; private set; }
-
+    private Player _player;
+    private Camera _camera;
     private bool _isJumpInputBlocked = false;
-    private bool _isAttackInputBlocked = false;
+
+    public bool IsBlocking { get; private set; }
+    public Vector2 MovementInput { get; private set; }
+    public Vector2 DashDirectionInput { get; private set; }
 
     private void Awake()
     {
@@ -29,11 +27,8 @@ public class PlayerInputHandler : MonoBehaviour
         _camera = Camera.main;
     }
 
-    public void DidMovement(InputAction.CallbackContext context) 
-    {
+    public void DidMovement(InputAction.CallbackContext context) => 
         MovementInput = context.ReadValue<Vector2>();
-        //Debug.Log("movement " + MovementInput);
-    }
 
     public void DidJump(InputAction.CallbackContext context) 
     {
@@ -41,23 +36,16 @@ public class PlayerInputHandler : MonoBehaviour
         {
             JumpButtonPushed?.Invoke();
             _isJumpInputBlocked = true;
-        }
-            
+        }            
 
         if (context.canceled)
             JumpButtonReleased?.Invoke();
-
-        //Debug.Log("Jumping");
     }
 
     public void DidMainAttack(InputAction.CallbackContext context) 
     {
-        if (context.started) //&& _isAttackInputBlocked == false) 
-        {
+        if (context.started)
             MainAttackButtonPushed?.Invoke();
-            //_isAttackInputBlocked = true;
-            //Debug.Log("Main Attack");
-        }
     }
 
     public void DidBlock(InputAction.CallbackContext context) 
@@ -66,30 +54,22 @@ public class PlayerInputHandler : MonoBehaviour
             IsBlocking = true;
 
         if (context.canceled) 
-            IsBlocking = false;
-            
+            IsBlocking = false;           
     }
 
     public void DidDeflection(InputAction.CallbackContext context) 
     {
         if (context.started) 
-        {
             DeflectionButtonPushed?.Invoke();
-            //Debug.Log("Did deflection");
-        }
     }
 
     public void DidDash(InputAction.CallbackContext context) 
     {
         if (context.started) 
-        {
             DashButtonPushed?.Invoke();
-        }
 
         if (context.canceled) 
-        {
             DashButtonReleased?.Invoke();
-        }
     }
 
     public void SetDashDirection(InputAction.CallbackContext context) 
@@ -103,5 +83,4 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
     public void ResetJumpInputBlock() => _isJumpInputBlocked = false;
-    public void ResetAttackInputBlock() => _isAttackInputBlocked = false;
 }

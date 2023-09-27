@@ -67,7 +67,8 @@ namespace HumanoidNS
         private void CommandKill() 
         {
             _destroyTimer.TimeIsUp -= CommandKill;
-            Humanoid.Destroy(Humanoid.gameObject);
+            //Humanoid.Destroy(Humanoid.gameObject);
+            Humanoid.gameObject.SetActive(false);
         }
     }
 }

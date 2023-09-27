@@ -22,7 +22,7 @@ MonoBehaviour:
   _audioClipVolume: 0.4
   _isLeftHandVisible: 0
   _bullet: {fileID: 3456171444169144500, guid: 6a661d99d375c98419771153d64b68cc, type: 3}
-  _aimTime: 3
+  _aimTime: 2
   _bulletsPerShot: 1
   _timeBetweenBullets: 0.25
   _recoil: 30

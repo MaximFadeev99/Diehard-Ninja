@@ -1,11 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
-
 public class IdleState : PlayerState
 {
-    public IdleState(PlayerStateMachine playerStateMachine, string animationCode) 
+    public IdleState(PlayerStateMachine playerStateMachine, int animationCode) 
         : base(playerStateMachine, animationCode) { }
 
     public override State TryChange()
@@ -22,7 +17,7 @@ public class IdleState : PlayerState
         {
             return PlayerStateMachine.GroundedSuperState.JumpState;
         }
-        else if (InputHandler.MovementInput.x != 0 && Player.IsJumping == false)
+        else if (InputHandler.MovementInput.x != 0)
         {
             return PlayerStateMachine.GroundedSuperState.RunState;
         }
@@ -30,10 +25,5 @@ public class IdleState : PlayerState
         {
             return this;
         }
-    }
-
-    public override void UpdatePhysicalMotion()
-    {
-        base.UpdatePhysicalMotion();
     }
 }

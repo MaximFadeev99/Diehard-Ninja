@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class AbilitySuperState : PlayerSuperState
 {
     public DeflectState DeflectState;
@@ -10,14 +6,9 @@ public class AbilitySuperState : PlayerSuperState
     public AbilitySuperState(PlayerStateMachine stateMachine, Player player) : 
         base(stateMachine, player)
     {
-        DeflectState = new DeflectState(stateMachine, "Deflect");
-        DashState = new DashState(stateMachine, "Dash");
+        DeflectState = new DeflectState(stateMachine, AnimationData.Deflect);
+        DashState = new DashState(stateMachine, AnimationData.Dash);
         DefaultState = DeflectState;
         CurrentState = DefaultState;
-    }
-
-    public override State SetState()
-    {
-        return base.SetState();
     }
 }

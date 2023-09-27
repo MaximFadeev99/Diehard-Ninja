@@ -1,31 +1,29 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackState : PlayerState
 {
-    private string _attack1 = "Attack1";
-    private string _attack2 = "Attack2";
-    private string _attack3 = "Attack3";
-    private List<string> _attacks = new();
-    private string _nextAttack;
-    private int _currentAttackCount = 0;
-    private bool _isTimeForAttack1 = false;
-    private ContactFilter2D _attackFilter = new();
     private Timer _dealDamageTimer = new();
-    private AudioSource _audioSource;
-    private AudioClip _audioClip;
+    private Timer _attackTimer;
+    private List<int> _attacks = new();
+    private ContactFilter2D _attackFilter = new();
+    private int _attack1 = AnimationData.Attack1;
+    private int _attack2 = AnimationData.Attack2;
+    private int _attack3 = AnimationData.Attack3;
+    private int _nextAttack;
+    private int _currentAttackCount;
+    private bool _isTimeForAttack1 = true;
+    private float _attackResetTime = 1.5f;
 
-    public AttackState(PlayerStateMachine playerStateMachine, string animationCode) 
+    public AttackState(PlayerStateMachine playerStateMachine, int animationCode) 
         : base(playerStateMachine, animationCode) 
     {
+        _attackTimer = Player.AttackTimer;
         _attacks.Add(_attack1);
         _attacks.Add(_attack2);
         _attacks.Add(_attack3);
         _attackFilter.SetLayerMask(PlayerData.EnemyLayerMask);
-        _audioSource = Player.AudioSource;
-        _audioClip = Player.PlayerData.SwordAttackSound;
-
+        AudioClip = PlayerData.SwordAttackSound;
     }
 
     public override void Enter()
@@ -36,10 +34,7 @@ public class AttackState : PlayerState
         _dealDamageTimer.TimeIsUp += DealDamage;
         _dealDamageTimer.Start(dealDamageDelay);
         Player.Animator.Play(_nextAttack);
-        _audioSource.clip = _audioClip;
-        _audioSource.volume = 1f;
-        _audioSource.loop = false;
-        _audioSource.Play();
+        PlaySound(1f, false);
     }
 
     public override State TryChange()
@@ -84,19 +79,15 @@ public class AttackState : PlayerState
         }
     }
 
-    public override void Exit()
-    {
-        _dealDamageTimer.TimeIsUp -= DealDamage;
-    }
+    public override void Exit() => _dealDamageTimer.TimeIsUp -= DealDamage;
+
+    public void ResetAttackTimer() => _isTimeForAttack1 = true;
 
     private void SetNextAttack() 
-    {
+    {        
         if (_currentAttackCount == 0 || _isTimeForAttack1)
         {
-            _currentAttackCount = 0;
-            _nextAttack = _attacks[_currentAttackCount];
-            _currentAttackCount++;
-            _isTimeForAttack1 = false;
+            RestartAttackSequence();
         }
         else
         {
@@ -104,20 +95,28 @@ public class AttackState : PlayerState
             {
                 _nextAttack = _attacks[_currentAttackCount];
                 _currentAttackCount++;
+                _attackTimer.Start(_attackResetTime);
             }
             else
             {
-                _currentAttackCount = 0;
-                _nextAttack = _attacks[_currentAttackCount];
-                _currentAttackCount++;
+                RestartAttackSequence();
             }
         }
+    }
+
+    private void RestartAttackSequence() 
+    {
+        _currentAttackCount = 0;
+        _nextAttack = _attacks[_currentAttackCount];
+        _currentAttackCount++;
+        _isTimeForAttack1 = false;
+        _attackTimer.Start(_attackResetTime);
     }
 
     private void DealDamage() 
     {
         List<Collider2D> results = new();              
-        Vector2 attackAreaSize = new Vector2(1f, 1.3f);
+        Vector2 attackAreaSize = new (1f, 1.3f);
         float attackAreaXOffset = Player.IsFacingRight ? 0.5f : -0.5f;
 
         Physics2D.OverlapBox(new Vector2(Player.transform.position.x + attackAreaXOffset, Player.transform.position.y),
@@ -126,10 +125,7 @@ public class AttackState : PlayerState
         foreach (Collider2D result in results)
         {
             if (result.TryGetComponent(out IDamagable iDamagable))
-            {
-                iDamagable.TakeDamage(Player.PlayerData.BasicDamage);
-            }                     
+                iDamagable.TakeDamage(Player.PlayerData.BasicDamage);                    
         }
     }
-    public void ResetAttackTimer() => _isTimeForAttack1 = true;
 }

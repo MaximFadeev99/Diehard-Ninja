@@ -10,7 +10,7 @@ public abstract class StateMachine
     public abstract void DoLogicUpdate();
     public abstract void Reset();
     public void DoPhysicsUpdate() => CurrentSuperState.CurrentState.UpdatePhysicalMotion();
-    protected void ChangeSuperState(SuperState newSuperState)
+    protected void CallSuperState(SuperState newSuperState)
     {
         CurrentSuperState = newSuperState;
         CurrentState = CurrentSuperState.SetState();

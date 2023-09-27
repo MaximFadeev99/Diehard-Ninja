@@ -1,13 +1,11 @@
-using DG.Tweening;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BlockState : PlayerState
 {
     private ContactFilter2D _blockFilter = new();
-    
-    public BlockState(PlayerStateMachine playerStateMachine, string animationCode) : 
+
+    public BlockState(PlayerStateMachine playerStateMachine, int animationCode) : 
         base(playerStateMachine, animationCode) 
     {
         _blockFilter.SetLayerMask(PlayerData.EnemyLayerMask);
@@ -40,7 +38,7 @@ public class BlockState : PlayerState
     {
         List<Collider2D> results = new();
         Vector2 blockAreaSize = new(0.1f, 1.3f);
-        float blockAreaXOffset = Player.IsFacingRight ? 0.3f : -0.3f;
+        float blockAreaXOffset = Player.IsFacingRight ? 0.35f : -0.35f;
         Physics2D.OverlapBox(new Vector2(Player.transform.position.x + blockAreaXOffset, Player.transform.position.y),
             blockAreaSize, 0f, _blockFilter, results);
 
@@ -57,8 +55,5 @@ public class BlockState : PlayerState
         }
     }
 
-    public override void Exit()
-    {
-        SpriteRenderer.flipX = !Player.IsFacingRight;
-    }
+    public override void Exit() => SpriteRenderer.flipX = !Player.IsFacingRight;
 }

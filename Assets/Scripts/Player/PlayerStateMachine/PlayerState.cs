@@ -12,11 +12,13 @@ public abstract class PlayerState : State
     protected PlayerInputHandler InputHandler;
     protected PlayerData PlayerData;
     protected SpriteRenderer SpriteRenderer;
-    protected string AnimationCode;
+    protected AudioSource AudioSource;
+    protected AudioClip AudioClip;
+    protected int AnimationCode;
     protected float NextXVelocity;
     protected float NextYVelocity;
 
-    public PlayerState (PlayerStateMachine playerStateMachine, string animationCode)
+    public PlayerState (PlayerStateMachine playerStateMachine, int animationCode)
     {
         PlayerStateMachine = playerStateMachine;
         AnimationCode = animationCode;
@@ -26,6 +28,7 @@ public abstract class PlayerState : State
         InputHandler = Player.InputHandler;
         PlayerData = Player.PlayerData;
         SpriteRenderer = Player.SpriteRenderer;
+        AudioSource = Player.AudioSource;
     }
 
     public override void Enter()
@@ -33,14 +36,11 @@ public abstract class PlayerState : State
         Player.Animator.Play(AnimationCode);
     }
 
-    public override void Exit() 
-    {
-        //Player.Animator.StopPlayback();
-    }
+    public override void Exit() {}
 
     public override void UpdatePhysicalMotion() 
     {
-        Rigidbody.velocity = new Vector2(NextXVelocity, NextYVelocity);
+        Rigidbody.velocity = new (NextXVelocity, NextYVelocity);
         NextXVelocity = Rigidbody.velocity.x;
         NextYVelocity = Rigidbody.velocity.y;
     }
@@ -57,7 +57,13 @@ public abstract class PlayerState : State
             Player.SpriteRenderer.flipX = false;
             Player.IsFacingRight = true;
         }
+    }
 
-       // Debug.Log("IsFacingRight: " + Player.IsFacingRight);
+    protected void PlaySound(float volume, bool isLooping) 
+    {
+        AudioSource.clip = AudioClip;
+        AudioSource.volume = volume;
+        AudioSource.loop = isLooping;
+        AudioSource.Play();
     }
 }

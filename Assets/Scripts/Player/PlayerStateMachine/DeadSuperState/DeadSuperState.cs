@@ -9,7 +9,7 @@ public class DeadSuperState : PlayerSuperState
     public DeadSuperState(PlayerStateMachine stateMachine, Player player) : 
         base(stateMachine, player)
     {
-        DeadState = new DeadState(stateMachine, "Die");
+        DeadState = new DeadState(stateMachine, AnimationData.Die);
         DefaultState = DeadState;
         CurrentState = DefaultState;
     }

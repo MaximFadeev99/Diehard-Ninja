@@ -5,22 +5,22 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    [SerializeField] private GameObject _target;
+    [SerializeField] private Player _player;
 
     private float _defaultZPosition = -10;
 
     private void Start()
     {
         transform.position = new Vector3 
-            (_target.transform.position.x, _target.transform.position.y, _defaultZPosition);
+            (_player.transform.position.x, _player.transform.position.y, _defaultZPosition);
     }
 
     private void Update()
     {
         float distanceTolerance = 2f;
 
-        if (Mathf.Abs(Mathf.Abs(_target.transform.position.x) - Mathf.Abs(transform.position.x)) > distanceTolerance
-            || Mathf.Abs(Mathf.Abs(_target.transform.position.y - transform.position.y)) > distanceTolerance)
+        if (Mathf.Abs(Mathf.Abs(_player.transform.position.x) - Mathf.Abs(transform.position.x)) > distanceTolerance
+            || Mathf.Abs(Mathf.Abs(_player.transform.position.y - transform.position.y)) > distanceTolerance)
         {
             MoveCamera();
         }
@@ -28,9 +28,10 @@ public class CameraMovement : MonoBehaviour
 
     private void MoveCamera() 
     {
-        float moveDistance = 0.03f;
-        float newXPosition = Mathf.MoveTowards(transform.position.x, _target.transform.position.x, moveDistance);
-        float newYPosition = Mathf.MoveTowards(transform.position.y, _target.transform.position.y, moveDistance);
+        float moveDistance = Mathf.Abs(_player.Rigidbody.velocity.x) > 10 
+            || Mathf.Abs(_player.Rigidbody.velocity.y) > 10 ? 0.2f : 0.07f;
+        float newXPosition = Mathf.MoveTowards(transform.position.x, _player.transform.position.x, moveDistance);
+        float newYPosition = Mathf.MoveTowards(transform.position.y, _player.transform.position.y, moveDistance);
         
         transform.position = new Vector3(newXPosition, newYPosition, _defaultZPosition); 
     }

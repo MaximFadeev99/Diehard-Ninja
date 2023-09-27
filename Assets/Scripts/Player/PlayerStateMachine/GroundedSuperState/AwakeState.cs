@@ -1,14 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class AwakeState : PlayerState
 {
-    public AwakeState(PlayerStateMachine playerStateMachine, string animationCode) 
+    public AwakeState(PlayerStateMachine playerStateMachine, int animationCode) 
         : base(playerStateMachine, animationCode)  {}
 
     public override State TryChange() 
     {
-        return this;
+        if (Player.IsAwakening) 
+        {
+            return this;
+        }
+        else 
+        {
+            return PlayerStateMachine.GroundedSuperState.IdleState;
+        }
     }
 }

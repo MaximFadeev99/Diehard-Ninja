@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using PlayerNS;
 
 public class PlayerStateMachine : StateMachine
@@ -15,34 +12,34 @@ public class PlayerStateMachine : StateMachine
     public PlayerStateMachine (Player player) 
     {
         Player = player;
-        GroundedSuperState = new GroundedSuperState(this, Player);
-        AirbornSuperState = new AirbornSuperState(this, Player);
-        WallTouchingSuperState = new WallTouchingSuperState(this, Player);
-        AbilitySuperState = new AbilitySuperState(this, Player);
-        DeadSuperState = new DeadSuperState(this, Player);
+        GroundedSuperState = new (this, Player);
+        AirbornSuperState = new (this, Player);
+        WallTouchingSuperState = new (this, Player);
+        AbilitySuperState = new (this, Player);
+        DeadSuperState = new (this, Player);
     }
 
     public override void DoLogicUpdate() 
     {
         if (Player.IsDead) 
         {
-            ChangeSuperState(DeadSuperState);
+            CallSuperState(DeadSuperState);
         }
         else if (Player.IsUsingAbility)
         {
-            ChangeSuperState(AbilitySuperState);
+            CallSuperState(AbilitySuperState);
         }
         else if (Player.IsGrounded || Player.IsJumping)
         {
-            ChangeSuperState(GroundedSuperState);
+            CallSuperState(GroundedSuperState);
         }
         else if (Player.IsTouchingWallLeft || Player.IsTouchingWallRight || Player.IsWallJumping)
         {
-            ChangeSuperState(WallTouchingSuperState);
+            CallSuperState(WallTouchingSuperState);
         }
         else if (Player.Rigidbody.velocity.y < 0)
         {
-            ChangeSuperState(AirbornSuperState);
+            CallSuperState(AirbornSuperState);
         }
     }
 
@@ -51,10 +48,4 @@ public class PlayerStateMachine : StateMachine
         CurrentSuperState = GroundedSuperState;
         CurrentState = GroundedSuperState.AwakeState;
     } 
-
-    public void ExitAwakeState() 
-    {
-        CurrentSuperState = GroundedSuperState;
-        GroundedSuperState.ChangeAwakeState();
-    }
 }

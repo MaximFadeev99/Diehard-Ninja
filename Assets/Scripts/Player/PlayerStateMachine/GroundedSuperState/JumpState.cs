@@ -1,28 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class JumpState : PlayerState
 {
     private float _xInput;
-    private AudioSource _audioSource;
-    private AudioClip _audioClip;
 
-    public JumpState(PlayerStateMachine playerStateMachine, string animationCode) 
+    public JumpState(PlayerStateMachine playerStateMachine, int animationCode) 
         : base(playerStateMachine, animationCode) 
     {
-        _audioSource = Player.AudioSource;
-        _audioClip = Player.PlayerData.JumpingSound;
+        AudioClip = Player.PlayerData.JumpingSound;
     }
 
 
     public override void Enter()
     {
         base.Enter();
-        _audioSource.clip = _audioClip;
-        _audioSource.volume = 0.4f;
-        _audioSource.loop = false;
-        _audioSource.Play();
+        PlaySound(0.4f, false);
         _xInput = InputHandler.MovementInput.x;       
     }
 

@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace PlayerNS
 {
     public class GroundedSuperState : PlayerSuperState
@@ -16,12 +12,12 @@ namespace PlayerNS
         public GroundedSuperState(PlayerStateMachine stateMachine, Player player) :
             base(stateMachine, player)
         {
-            AwakeState = new AwakeState(stateMachine, "Awake");
-            IdleState = new IdleState(stateMachine, "Idle");
-            RunState = new RunState(stateMachine, "Run");
-            JumpState = new JumpState(stateMachine, "Jump");
-            BlockState = new BlockState(stateMachine, "Block");
-            AttackState = new AttackState(stateMachine, "Attack");
+            AwakeState = new AwakeState(stateMachine, AnimationData.Awake);
+            IdleState = new IdleState(stateMachine, AnimationData.Idle);
+            RunState = new RunState(stateMachine, AnimationData.Run);
+            JumpState = new JumpState(stateMachine, AnimationData.Jump);
+            BlockState = new BlockState(stateMachine, AnimationData.Block);
+            AttackState = new AttackState(stateMachine, 0);
             DefaultState = AwakeState;
             CurrentState = DefaultState;
             CurrentState.Enter();

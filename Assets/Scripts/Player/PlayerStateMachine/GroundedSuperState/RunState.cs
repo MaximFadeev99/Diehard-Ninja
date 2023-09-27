@@ -1,17 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RunState : PlayerState
 {
-    private AudioSource _audioSource;
-    private AudioClip _audioClip;
-
-    public RunState(PlayerStateMachine playerStateMachine, string animationCode) 
+    public RunState(PlayerStateMachine playerStateMachine, int animationCode) 
         : base(playerStateMachine, animationCode)     
     {
-        _audioSource = Player.AudioSource;
-        _audioClip = Player.PlayerData.RuninngSound;
+        AudioClip = Player.PlayerData.RuninngSound;
     }
 
     public override State TryChange()
@@ -28,7 +22,7 @@ public class RunState : PlayerState
         {
             return PlayerStateMachine.GroundedSuperState.JumpState;
         }
-        else if (InputHandler.MovementInput.x != 0 && Player.IsJumping == false)
+        else if (InputHandler.MovementInput.x != 0)
         {
             return this;
         }
@@ -41,10 +35,7 @@ public class RunState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        _audioSource.clip = _audioClip;
-        _audioSource.volume = 1f;
-        _audioSource.loop = true;
-        _audioSource.Play();
+        PlaySound(1f, true);
     }
 
     public override void UpdatePhysicalMotion()
@@ -55,8 +46,5 @@ public class RunState : PlayerState
         base.UpdatePhysicalMotion();     
     }
 
-    public override void Exit()
-    {
-        _audioSource.Stop();
-    }
+    public override void Exit() => AudioSource.Stop();
 }

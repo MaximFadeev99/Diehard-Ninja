@@ -1,30 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FallState : PlayerState
 {
     private float _startXVelocity;
     
-
-    public FallState(PlayerStateMachine playerStateMachine,string animationCode) 
+    public FallState(PlayerStateMachine playerStateMachine,int animationCode) 
         : base(playerStateMachine, animationCode) {}
 
     public override void Enter()
     {
         base.Enter();
         _startXVelocity = Rigidbody.velocity.x;
-        //Debug.Log("Start XVelocity: " + _startXVelocity);
+        Rigidbody.interpolation = RigidbodyInterpolation2D.Interpolate;
     }
 
-    public override State TryChange()
-    {
-        if (Player.Rigidbody.velocity.y < 0)
-        {
-            return this;
-        }
-
-        return null;
+    public override State TryChange() 
+    {  
+        return this;
     }
 
     public override void UpdatePhysicalMotion()
@@ -45,4 +37,7 @@ public class FallState : PlayerState
         NextYVelocity = Rigidbody.velocity.y - gravityAmplifier;
         base.UpdatePhysicalMotion();       
     }
+
+    public override void Exit() => 
+        Rigidbody.interpolation = RigidbodyInterpolation2D.None;
 }

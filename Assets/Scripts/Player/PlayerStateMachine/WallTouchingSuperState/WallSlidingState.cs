@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WallSlidingState : PlayerState
 {
-    public WallSlidingState(PlayerStateMachine playerStateMachine, string animationCode) 
+    public WallSlidingState(PlayerStateMachine playerStateMachine, int animationCode) 
         : base(playerStateMachine, animationCode){}
 
     public override void Enter()

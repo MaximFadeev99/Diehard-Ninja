@@ -21,11 +21,11 @@ public class HumanoidStateMachine : StateMachine
     {
         if (Humanoid.IsDead)
         {
-            ChangeSuperState(DeadSuperState);
+            CallSuperState(DeadSuperState);
         }
         else
         {
-            ChangeSuperState(GroundedSuperState);
+            CallSuperState(GroundedSuperState);
         }
     }
 

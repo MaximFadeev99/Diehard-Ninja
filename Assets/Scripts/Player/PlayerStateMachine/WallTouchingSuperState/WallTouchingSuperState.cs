@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class WallTouchingSuperState : PlayerSuperState
 {
     public WallSlidingState WallSlidingState { get; private set; } 
@@ -10,8 +6,8 @@ public class WallTouchingSuperState : PlayerSuperState
     public WallTouchingSuperState(PlayerStateMachine stateMachine, Player player) : 
         base(stateMachine, player)
     {
-        WallSlidingState = new WallSlidingState(stateMachine, "WallSlide");
-        WallJumpState = new WallJumpState(stateMachine, "Jump");
+        WallSlidingState = new (stateMachine, AnimationData.WallSlide);
+        WallJumpState = new (stateMachine, AnimationData.Jump);
         DefaultState = WallSlidingState;
         CurrentState = DefaultState;
     }

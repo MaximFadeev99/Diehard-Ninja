@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DashState : PlayerState
@@ -11,7 +9,7 @@ public class DashState : PlayerState
     private float _finalDashX;
     private float _finalDashY;
 
-    public DashState(PlayerStateMachine playerStateMachine, string animationCode) : 
+    public DashState(PlayerStateMachine playerStateMachine, int animationCode) : 
         base(playerStateMachine, animationCode) 
     {
         _dashDirectionIndicator = Player.DashDirectionIndicator;

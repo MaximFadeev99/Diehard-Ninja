@@ -67,7 +67,7 @@ public class SearchArea : MonoBehaviour // TODO: Remove alert area if unrequired
         int playerLayer = 8;
         int wallLayer = 6;
         Vector2 raycastDirection = (Vector2)_player.transform.position - (Vector2)transform.position; 
-        int maxHitCount = 7;
+        int maxHitCount = 15;
         RaycastHit2D[] _hits = new RaycastHit2D[maxHitCount];
 
         Physics2D.Raycast(transform.position, raycastDirection, _contactFilter.NoFilter(), 
