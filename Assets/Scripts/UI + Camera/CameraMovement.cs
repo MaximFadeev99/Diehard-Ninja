@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
@@ -28,8 +25,11 @@ public class CameraMovement : MonoBehaviour
 
     private void MoveCamera() 
     {
-        float moveDistance = Mathf.Abs(_player.Rigidbody.velocity.x) > 10 
-            || Mathf.Abs(_player.Rigidbody.velocity.y) > 10 ? 0.2f : 0.07f;
+        float velocityThreshold = 10f;
+        float minMoveDistance = 0.07f;
+        float maxMoveDistance = 0.2f;
+        float moveDistance = Mathf.Abs(_player.Rigidbody.velocity.x) > velocityThreshold
+            || Mathf.Abs(_player.Rigidbody.velocity.y) > velocityThreshold ? maxMoveDistance : minMoveDistance;
         float newXPosition = Mathf.MoveTowards(transform.position.x, _player.transform.position.x, moveDistance);
         float newYPosition = Mathf.MoveTowards(transform.position.y, _player.transform.position.y, moveDistance);
         

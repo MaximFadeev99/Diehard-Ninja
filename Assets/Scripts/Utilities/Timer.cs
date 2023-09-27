@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Timer 
@@ -8,8 +6,9 @@ public class Timer
     private float _timeLag;
     private float _elapsedTime;
 
-    public bool IsActive { get; private set; } = false;
     public Action TimeIsUp;
+
+    public bool IsActive { get; private set; } = false;
 
     public void Start(float timeLag) 
     {

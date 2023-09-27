@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class HeartHolder : MonoBehaviour
@@ -23,10 +21,8 @@ public class HeartHolder : MonoBehaviour
         }
     }
 
-    public void ReduceLifeAmount() 
-    {
+    public void ReduceLifeAmount()  => 
         _hearts[_hearts.Count - 1].SetNextSprite();         
-    }
 
     private void OnHeartDestroyed(Heart heart) 
     {

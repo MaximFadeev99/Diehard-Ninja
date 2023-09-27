@@ -1,27 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Threading;
-using System.Threading.Tasks;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private GameOverPanel _gameOverPanel;
     [SerializeField] private PlayerHealth _playerHealth;
 
-    private void OnEnable()
+    private Timer _gameOverActivationTimer = new ();
+
+    private void OnEnable() => 
+        _playerHealth.PlayerDied += StartGameOverTimer;
+
+    private void OnDisable() => 
+        _playerHealth.PlayerDied -= StartGameOverTimer;
+
+    private void Update()
     {
-        _playerHealth.PlayerDied += ActivateGameOverPanel;
+        if (_gameOverActivationTimer.IsActive)
+            _gameOverActivationTimer.Tick();
     }
 
-    private void OnDisable()
+    private void StartGameOverTimer() 
     {
-        _playerHealth.PlayerDied -= ActivateGameOverPanel;
+        float delay = 1.5f;
+
+        _gameOverActivationTimer.TimeIsUp += ActivateGameOverPanel;
+        _gameOverActivationTimer.Start(delay);
     }
 
-    public async void ActivateGameOverPanel()
+    private void ActivateGameOverPanel()
     {
-        await Task.Delay(1500);
+        _gameOverActivationTimer.TimeIsUp -= ActivateGameOverPanel;
         _gameOverPanel.gameObject.SetActive(true);
-    }
+    } 
 }

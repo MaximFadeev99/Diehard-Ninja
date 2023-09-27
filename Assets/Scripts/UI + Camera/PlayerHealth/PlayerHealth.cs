@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
@@ -17,15 +15,11 @@ public class PlayerHealth : MonoBehaviour
         _heartHolder.GenerateHearts(_player.PlayerData.StartHeartCount);
     }
 
-    private void OnEnable()
-    {
+    private void OnEnable() =>
         _player.HealthChanged += OnHealthChanged;
-    }
 
-    private void OnDisable()
-    {
+    private void OnDisable() => 
         _player.HealthChanged -= OnHealthChanged;
-    }
 
     private void OnHealthChanged() 
     {
@@ -34,5 +28,4 @@ public class PlayerHealth : MonoBehaviour
         if(_heartHolder.AreHeartsLeft == false)
             PlayerDied?.Invoke();
     }
-
 }

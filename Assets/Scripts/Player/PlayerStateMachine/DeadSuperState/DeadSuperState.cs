@@ -1,16 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class DeadSuperState : PlayerSuperState
+namespace PlayerNS
 {
-    public DeadState DeadState { get; private set; }
-    
-    public DeadSuperState(PlayerStateMachine stateMachine, Player player) : 
-        base(stateMachine, player)
+    public class DeadSuperState : PlayerSuperState
     {
-        DeadState = new DeadState(stateMachine, AnimationData.Die);
-        DefaultState = DeadState;
-        CurrentState = DefaultState;
+        public DeadState DeadState { get; private set; }
+
+        public DeadSuperState(PlayerStateMachine stateMachine, Player player) :
+            base(stateMachine, player)
+        {
+            DeadState = new DeadState(stateMachine, AnimationData.Die);
+            DefaultState = DeadState;
+            CurrentState = DefaultState;
+        }
     }
 }

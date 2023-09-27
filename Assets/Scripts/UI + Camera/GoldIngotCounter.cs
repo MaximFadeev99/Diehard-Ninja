@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -17,16 +15,12 @@ public class GoldIngotCounter : MonoBehaviour
         _count.text = "0";
     }
 
-    private void OnEnable()
-    {
+    private void OnEnable() =>
         _player.GoldIngotNumberChanged += ChangeCount;
-    }
 
-    private void OnDisable()
-    {
+
+    private void OnDisable() =>
         _player.GoldIngotNumberChanged -= ChangeCount;
-    }
-
 
     private void ChangeCount(int newValue) 
     {
