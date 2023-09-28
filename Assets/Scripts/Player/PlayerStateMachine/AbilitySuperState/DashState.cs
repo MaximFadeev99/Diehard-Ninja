@@ -72,7 +72,7 @@ public class DashState : PlayerState
     {
         float dashExitYVelocity = -0.01f;
         
-        _dashDirectionIndicator.gameObject?.SetActive(false);
+        _dashDirectionIndicator.gameObject.SetActive(false);
         Rigidbody.drag = _initialLinearDrag;
         Player.SpriteRenderer.color = _initialColor;
         Rigidbody.excludeLayers = PlayerData.NothingLayerMask;
@@ -85,6 +85,7 @@ public class DashState : PlayerState
     {
         float RotationAngle = Vector2.SignedAngle
             (Vector2.up, InputHandler.DashDirectionInput);
+
         _dashDirectionIndicator.transform.rotation = Quaternion.Euler(0f, 0f, RotationAngle);        
     }
 

@@ -5,12 +5,12 @@ using UnityEngine;
 public class Scumbag : MonoBehaviour, IDamagable
 {
     #region Serialized Fields
-    [SerializeField] private ScumbagData _scumbagData;
+    [SerializeField] private ScumbagData _data;
     [SerializeField] private WeaponData _weaponData;
     [SerializeField] private bool _isFacingRightFirst;
     [SerializeField] private Player _player;
 
-    public ScumbagData ScumbagData => _scumbagData;
+    public ScumbagData ScumbagData => _data;
     public WeaponData WeaponData => _weaponData;
     public bool IsFacingRightFirst => _isFacingRightFirst;
     public Player Player => _player;
@@ -34,7 +34,7 @@ public class Scumbag : MonoBehaviour, IDamagable
     #endregion
 
     #region Others
-    public ScumbagStateMachine HumanoidStateMachine { get; private set; }
+    public ScumbagStateMachine StateMachine { get; private set; }
     public float CurrentHealth { get; private set; }
     public bool IsFacingRight { get; private set; }
     #endregion
@@ -43,7 +43,7 @@ public class Scumbag : MonoBehaviour, IDamagable
     {
         GetRequiredComponents();
         CurrentHealth = ScumbagData.StartHealth;
-        HumanoidStateMachine = new ScumbagStateMachine(this);
+        StateMachine = new (this);
         Flip(IsFacingRightFirst);      
     }
 
@@ -51,9 +51,9 @@ public class Scumbag : MonoBehaviour, IDamagable
 
     private void OnDisable() => SearchArea.PlayerGotBehind -= Flip;
 
-    private void Update() => HumanoidStateMachine.DoLogicUpdate();
+    private void Update() => StateMachine.DoLogicUpdate();
 
-    private void FixedUpdate() => HumanoidStateMachine.DoPhysicsUpdate();
+    private void FixedUpdate() => StateMachine.DoPhysicsUpdate();
 
     public void SetPlayerInRange(bool isPlayerInRange) => IsPlayerInRange = isPlayerInRange;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class BodyPart : MonoBehaviour
 {
-    protected Scumbag Humanoid;
+    protected Scumbag Scumbag;
     protected WeaponData WeaponData;
     protected Vector3 _localPosition;
 
@@ -15,10 +15,10 @@ public abstract class BodyPart : MonoBehaviour
     protected virtual void Awake()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
-        Humanoid = GetComponentInParent<Scumbag>();
-        _searchArea = Humanoid.GetComponentInChildren<SearchArea>();
-        WeaponData = Humanoid.WeaponData;
-        Flip(Humanoid.IsFacingRightFirst);
+        Scumbag = GetComponentInParent<Scumbag>();
+        _searchArea = Scumbag.GetComponentInChildren<SearchArea>();
+        WeaponData = Scumbag.WeaponData;
+        Flip(Scumbag.IsFacingRightFirst);
     }
 
     protected virtual void OnEnable() => 
@@ -29,13 +29,13 @@ public abstract class BodyPart : MonoBehaviour
 
     protected virtual void Start() 
     {
-        if (Humanoid.Player == null)
+        if (Scumbag.Player == null)
             gameObject.SetActive(false);
     }
 
     protected virtual void Update()
     {
-        if (Humanoid.IsDead == false && transform.localPosition != _localPosition)
+        if (Scumbag.IsDead == false && transform.localPosition != _localPosition)
             transform.localPosition = _localPosition;
     }
 

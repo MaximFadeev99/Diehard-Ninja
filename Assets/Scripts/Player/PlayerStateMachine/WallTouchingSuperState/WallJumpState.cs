@@ -3,10 +3,7 @@ public class WallJumpState : PlayerState
     private bool _wasTouchingWallRight;
 
     public WallJumpState(PlayerStateMachine playerStateMachine, int animationCode) :
-        base(playerStateMachine, animationCode) 
-    {
-        AudioClip = Player.PlayerData.JumpingSound;
-    }
+        base(playerStateMachine, animationCode) => AudioClip = Player.Data.JumpingSound;
 
     public override void Enter()
     {

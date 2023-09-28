@@ -43,7 +43,7 @@ namespace ScumbagNS
             AdjustHeadSettings();
             AdjustVodySettings();
             _decapitationEffect.Play();
-            _destroyTimer.TimeIsUp += Kill;
+            _destroyTimer.TimeIsUp += Deactivate;
             _destroyTimer.Start(_decapitationEffect.main.duration);
         }
 
@@ -70,9 +70,9 @@ namespace ScumbagNS
             _boxCollider.excludeLayers = _scumbagData.PlayerLayerMask;
         }
 
-        private void Kill() 
+        private void Deactivate() 
         {
-            _destroyTimer.TimeIsUp -= Kill;
+            _destroyTimer.TimeIsUp -= Deactivate;
             Scumbag.gameObject.SetActive(false);
         }
     }

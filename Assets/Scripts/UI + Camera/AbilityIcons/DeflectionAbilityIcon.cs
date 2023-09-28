@@ -3,7 +3,7 @@ public class DeflectionAbilityIcon : AbilityIcon
     protected override void Awake()
     {
         base.Awake();
-        ResetTime = Player.PlayerData.DeflectionCoolDownTime;
+        ResetTime = Player.Data.DeflectionCoolDownTime;
     }
 
     protected override void OnEnable()

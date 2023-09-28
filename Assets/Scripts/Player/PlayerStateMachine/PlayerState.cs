@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 public abstract class PlayerState : State
 {
@@ -26,15 +23,12 @@ public abstract class PlayerState : State
         Animator = Player.Animator;
         Rigidbody = Player.Rigidbody;
         InputHandler = Player.InputHandler;
-        PlayerData = Player.PlayerData;
+        PlayerData = Player.Data;
         SpriteRenderer = Player.SpriteRenderer;
         AudioSource = Player.AudioSource;
     }
 
-    public override void Enter()
-    {
-        Player.Animator.Play(AnimationCode);
-    }
+    public override void Enter() => Player.Animator.Play(AnimationCode);
 
     public override void Exit() {}
 

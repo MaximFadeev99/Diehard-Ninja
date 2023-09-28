@@ -12,7 +12,7 @@ public class PlayerHealth : MonoBehaviour
     private void Awake()
     {
         _heartHolder = GetComponentInChildren<HeartHolder>();
-        _heartHolder.GenerateHearts(_player.PlayerData.StartHeartCount);
+        _heartHolder.GenerateHearts(_player.Data.StartHeartCount);
     }
 
     private void OnEnable() =>

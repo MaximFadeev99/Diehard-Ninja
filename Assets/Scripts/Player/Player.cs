@@ -12,16 +12,17 @@ public class Player : MonoBehaviour, IDamagable
 {
     #region Fields, Properties, Actions
 
+    #region Serialized Fields
     [SerializeField] private PlayerHealth _playerHealth;
     [SerializeField] private PlayerData _playerData;
 
-    public PlayerData PlayerData => _playerData;
-    public int AvailableGoldIngots { get; private set; } = 0;
+    public PlayerData Data => _playerData;
+    #endregion
 
     #region Components 
     public Animator Animator { get; private set; }
     public PlayerInputHandler InputHandler {  get; private set; }
-    public PlayerStateMachine PlayerStateMachine { get; private set; }
+    public PlayerStateMachine StateMachine { get; private set; }
     public SpriteRenderer SpriteRenderer { get; private set; }
     public Rigidbody2D Rigidbody { get; private set; }
     public AudioSource AudioSource { get; private set; }
@@ -55,6 +56,7 @@ public class Player : MonoBehaviour, IDamagable
     public bool IsUsingAbility { get; private set; } = false;
     public bool IsDeflecting { get; private set; } = false;
     public bool IsDashing { get; private set; } = false;
+    public bool IsDashOnHold { get; private set; } = false;
     #endregion
 
     #region Others
@@ -66,8 +68,8 @@ public class Player : MonoBehaviour, IDamagable
     private bool _isInvincible = false;
     private string DashDirectionIndicatorName = nameof(DashDirectionIndicator);
     private string DashAfterImage = nameof(DashAfterImage);
-
-    public bool IsDashOnHold { get; private set; } = false;
+  
+    public int AvailableGoldIngots { get; private set; } = 0;
     #endregion
 
     #region  Actions
@@ -88,8 +90,8 @@ public class Player : MonoBehaviour, IDamagable
     {
         GetRequiredComponents();
         CreateTimers();
-        PlayerStateMachine = new (this);
-        PlayerStateMachine.Reset();
+        StateMachine = new (this);
+        StateMachine.Reset();
         DoSurfaceRaycasts();
     }
 
@@ -109,20 +111,20 @@ public class Player : MonoBehaviour, IDamagable
             DoSurfaceRaycasts();
 
         IsBlocking = InputHandler.IsBlocking;
-        PlayerStateMachine.DoLogicUpdate();
+        StateMachine.DoLogicUpdate();
     }
 
-    private void FixedUpdate() => PlayerStateMachine.DoPhysicsUpdate();
+    private void FixedUpdate() => StateMachine.DoPhysicsUpdate();
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position,
-            transform.position + Vector3.down * PlayerData.GroundDistanceCheck);
+            transform.position + Vector3.down * Data.GroundDistanceCheck);
         Gizmos.DrawLine(transform.position,
-            transform.position + Vector3.right * PlayerData.WallDistanceCheck);
+            transform.position + Vector3.right * Data.WallDistanceCheck);
         Gizmos.DrawLine(transform.position,
-            transform.position + Vector3.left * PlayerData.WallDistanceCheck);
+            transform.position + Vector3.left * Data.WallDistanceCheck);
     }
     #endregion
 
@@ -191,17 +193,17 @@ public class Player : MonoBehaviour, IDamagable
 
     private void OnJumpButtonPushed()
     {
-        if ((IsTouchingWallLeft || IsTouchingWallRight))
-        {
-            IsWallJumping = true;
-        }
-        else if (IsGrounded || IsCoyoteTimeActive)
+        if (IsGrounded || IsCoyoteTimeActive)
         {
             IsJumping = true;
         }
+        else if ((IsTouchingWallLeft || IsTouchingWallRight))
+        {
+            IsWallJumping = true;
+        }
 
         _jumpResetTimer.TimeIsUp += ResetJumping;
-        _jumpResetTimer.Start(PlayerData.JumpDuration);
+        _jumpResetTimer.Start(Data.JumpDuration);
     }
 
     private void TryActivateCoyoteTime() 
@@ -209,7 +211,7 @@ public class Player : MonoBehaviour, IDamagable
         if (IsGroundedInPreviousFrame && IsGrounded == false)
         {
             IsCoyoteTimeActive = true;
-            _coyoteJumpTimer.Start(PlayerData.CoyoteJumpTime);
+            _coyoteJumpTimer.Start(Data.CoyoteJumpTime);
         }
 
         IsGroundedInPreviousFrame = IsGrounded;
@@ -231,11 +233,11 @@ public class Player : MonoBehaviour, IDamagable
     private void DoSurfaceRaycasts()
     {
         IsGrounded = Physics2D.Raycast
-            (transform.position, Vector2.down, PlayerData.GroundDistanceCheck, PlayerData.WallLayerMask);
+            (transform.position, Vector2.down, Data.GroundDistanceCheck, Data.WallLayerMask);
         IsTouchingWallLeft = Physics2D.Raycast
-            (transform.position, Vector2.left, PlayerData.WallDistanceCheck, PlayerData.WallLayerMask);
+            (transform.position, Vector2.left, Data.WallDistanceCheck, Data.WallLayerMask);
         IsTouchingWallRight = Physics2D.Raycast
-            (transform.position, Vector2.right, PlayerData.WallDistanceCheck, PlayerData.WallLayerMask);
+            (transform.position, Vector2.right, Data.WallDistanceCheck, Data.WallLayerMask);
         TryActivateCoyoteTime();       
     }
     #endregion
@@ -257,7 +259,7 @@ public class Player : MonoBehaviour, IDamagable
     public void DashForward() => IsUsingAttackDash = true; //used by Animation Event
     public void ActivateInvincibilty() => _isInvincible = true;
     public void DeactivateInvincibility() => _isInvincible = false;
-    private void ResetAttackTimer() => PlayerStateMachine.GroundedSuperState.AttackState.ResetAttackTimer();
+    private void ResetAttackTimer() => StateMachine.GroundedSuperState.AttackState.ResetAttackTimer();
     private void ActivateDeadState() => IsDead = true;
     #endregion
 
@@ -273,11 +275,11 @@ public class Player : MonoBehaviour, IDamagable
         }
     }
 
-    public void EndDeflectionAbility()
+    public void EndDeflectionAbility() //used by animation event
     {
         IsDeflecting = false;
         IsUsingAbility = false;
-        _deflectionCoolDownTimer.Start(PlayerData.DeflectionCoolDownTime);
+        _deflectionCoolDownTimer.Start(Data.DeflectionCoolDownTime);
         DeflectionEnded?.Invoke();
     }
 
@@ -295,7 +297,7 @@ public class Player : MonoBehaviour, IDamagable
             IsDashOnHold = true;
             DashStarted?.Invoke();
             _dashTimer.TimeIsUp += ResetDashOnHold;
-            _dashTimer.Start(PlayerData.DashHoldTime);
+            _dashTimer.Start(Data.DashHoldTime);
         }
     }
    
@@ -304,8 +306,8 @@ public class Player : MonoBehaviour, IDamagable
         IsDashing = false;
         IsUsingAbility = false;
         _dashTimer.TimeIsUp -= EndDashAbility;
-        PlayerStateMachine.AbilitySuperState.DashState.ForceExit();
-        _dashTimer.Start(PlayerData.DashCoolDownTime);
+        StateMachine.AbilitySuperState.DashState.ForceExit();
+        _dashTimer.Start(Data.DashCoolDownTime);
         _dashTimer.TimeIsUp += ResetDashAbility;
         DashEnded?.Invoke();
     }
@@ -316,7 +318,7 @@ public class Player : MonoBehaviour, IDamagable
             IsDashOnHold = false;
             _dashTimer.TimeIsUp -= ResetDashOnHold;
             _dashTimer.TimeIsUp += EndDashAbility;
-            _dashTimer.Start(PlayerData.DashDuration);
+            _dashTimer.Start(Data.DashDuration);
         }
     }
 

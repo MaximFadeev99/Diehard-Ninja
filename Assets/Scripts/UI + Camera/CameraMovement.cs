@@ -5,6 +5,7 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private Player _player;
 
     private float _defaultZPosition = -10;
+    private float _moveDistance;
 
     private void Start()
     {
@@ -12,7 +13,7 @@ public class CameraMovement : MonoBehaviour
             (_player.transform.position.x, _player.transform.position.y, _defaultZPosition);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         float distanceTolerance = 2f;
 
@@ -25,14 +26,32 @@ public class CameraMovement : MonoBehaviour
 
     private void MoveCamera() 
     {
-        float velocityThreshold = 10f;
-        float minMoveDistance = 0.07f;
-        float maxMoveDistance = 0.2f;
-        float moveDistance = Mathf.Abs(_player.Rigidbody.velocity.x) > velocityThreshold
-            || Mathf.Abs(_player.Rigidbody.velocity.y) > velocityThreshold ? maxMoveDistance : minMoveDistance;
-        float newXPosition = Mathf.MoveTowards(transform.position.x, _player.transform.position.x, moveDistance);
-        float newYPosition = Mathf.MoveTowards(transform.position.y, _player.transform.position.y, moveDistance);
+        SetMoveDistance();
+        float newXPosition = Mathf.MoveTowards
+            (transform.position.x, _player.transform.position.x, _moveDistance);
+        float newYPosition = Mathf.MoveTowards
+            (transform.position.y, _player.transform.position.y, _moveDistance);
         
         transform.position = new Vector3(newXPosition, newYPosition, _defaultZPosition); 
+    }
+
+    private void SetMoveDistance()    
+    {
+        float velocityThreshold = 10f;
+
+        if (_player.StateMachine.CurrentState == _player.StateMachine.WallTouchingSuperState.WallSlidingState)
+        {
+            _moveDistance = 0.05f;
+        }
+        else if (_player.StateMachine.CurrentState == _player.StateMachine.AirbornSuperState.FallState &&
+            (Mathf.Abs(_player.Rigidbody.velocity.x) > velocityThreshold || 
+            Mathf.Abs(_player.Rigidbody.velocity.y) > velocityThreshold))
+        {
+            _moveDistance = 0.2f;
+        }
+        else 
+        {
+            _moveDistance = 0.07f;
+        }   
     }
 }

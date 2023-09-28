@@ -3,7 +3,7 @@ public class DashAbilityIcon : AbilityIcon
     protected override void Awake()
     {
         base.Awake();
-        ResetTime = Player.PlayerData.DashCoolDownTime;
+        ResetTime = Player.Data.DashCoolDownTime;
     }
 
     protected override void OnEnable()

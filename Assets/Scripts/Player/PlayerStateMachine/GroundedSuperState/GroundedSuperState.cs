@@ -12,12 +12,12 @@ namespace PlayerNS
         public GroundedSuperState(PlayerStateMachine stateMachine, Player player) :
             base(stateMachine, player)
         {
-            AwakeState = new AwakeState(stateMachine, AnimationData.Awake);
-            IdleState = new IdleState(stateMachine, AnimationData.Idle);
-            RunState = new RunState(stateMachine, AnimationData.Run);
-            JumpState = new JumpState(stateMachine, AnimationData.Jump);
-            BlockState = new BlockState(stateMachine, AnimationData.Block);
-            AttackState = new AttackState(stateMachine, 0);
+            AwakeState = new (stateMachine, AnimationData.Awake);
+            IdleState = new (stateMachine, AnimationData.Idle);
+            RunState = new (stateMachine, AnimationData.Run);
+            JumpState = new (stateMachine, AnimationData.Jump);
+            BlockState = new (stateMachine, AnimationData.Block);
+            AttackState = new (stateMachine, 0);
             DefaultState = AwakeState;
             CurrentState = DefaultState;
             CurrentState.Enter();

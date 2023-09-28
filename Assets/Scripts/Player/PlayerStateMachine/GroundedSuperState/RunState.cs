@@ -1,12 +1,7 @@
-using UnityEngine;
-
 public class RunState : PlayerState
 {
     public RunState(PlayerStateMachine playerStateMachine, int animationCode) 
-        : base(playerStateMachine, animationCode)     
-    {
-        AudioClip = Player.PlayerData.RuninngSound;
-    }
+        : base(playerStateMachine, animationCode)  => AudioClip = Player.Data.RuninngSound;
 
     public override State TryChange()
     {

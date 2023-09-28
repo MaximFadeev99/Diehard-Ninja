@@ -6,9 +6,9 @@ public class Timer
     private float _timeLag;
     private float _elapsedTime;
 
-    public Action TimeIsUp;
-
     public bool IsActive { get; private set; } = false;
+
+    public Action TimeIsUp;
 
     public void Start(float timeLag) 
     {

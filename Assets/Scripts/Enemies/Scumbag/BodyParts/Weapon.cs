@@ -60,7 +60,7 @@ public class Weapon : BodyPart
             while (_bulletsFired < WeaponData.BulletsPerShot) 
             {
                 Vector2 flyDirection = _bulletSpawnPoint.transform.position - _bulletTrajectoryPoint.transform.position;
-                Vector2 rotationDirection = Humanoid.IsFacingRight ? -flyDirection : flyDirection;
+                Vector2 rotationDirection = Scumbag.IsFacingRight ? -flyDirection : flyDirection;
                 float bulletRotation = Mathf.Atan2(rotationDirection.y, rotationDirection.x) * Mathf.Rad2Deg;
                 _bulletSpawnPoint.GenerateBullet(flyDirection, bulletRotation);
                 _audioSource.Play();

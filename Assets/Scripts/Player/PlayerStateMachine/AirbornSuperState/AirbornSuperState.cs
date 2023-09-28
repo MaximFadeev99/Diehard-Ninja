@@ -5,7 +5,7 @@ public class AirbornSuperState : PlayerSuperState
     public AirbornSuperState(PlayerStateMachine stateMachine, Player player) : 
         base(stateMachine, player)
     {
-        FallState = new FallState(stateMachine, AnimationData.Fall);
+        FallState = new (stateMachine, AnimationData.Fall);
         DefaultState = FallState;
         CurrentState = DefaultState;
     }

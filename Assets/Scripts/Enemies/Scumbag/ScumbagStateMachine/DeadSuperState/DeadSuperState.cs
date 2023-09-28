@@ -7,7 +7,7 @@ namespace ScumbagNS
         public DeadSuperState(ScumbagStateMachine stateMachine, Scumbag scumbag) 
             : base(stateMachine, scumbag)
         {
-            DeadState = new DeadState(stateMachine);
+            DeadState = new (stateMachine);
             DefaultState = DeadState;
             CurrentState = DefaultState;
         }

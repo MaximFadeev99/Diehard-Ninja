@@ -84,7 +84,7 @@ public class DeflectState : PlayerState
             }            
             else if (result.gameObject.TryGetComponent(out IDeflectable iDeflectable)) 
             {
-                iDeflectable.ChangeDirection(iDeflectable.CurrentVelocity * -1f, Player.gameObject.layer);
+                iDeflectable.ChangeDirection(-iDeflectable.CurrentVelocity, Player.gameObject.layer);
             }
         }
     }

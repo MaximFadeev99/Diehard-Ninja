@@ -47,7 +47,7 @@ public class BlockState : PlayerState
             if (result.TryGetComponent(out IDeflectable iDeflectable)) 
             {
                 float yDirection = Random.Range(-0.9f, 0.9f);
-                float xDirection = iDeflectable.CurrentVelocity.x * -1f;
+                float xDirection = -iDeflectable.CurrentVelocity.x;
                 Vector2 newDirection = new(xDirection, yDirection);
                 
                 iDeflectable.ChangeDirection(newDirection, Player.gameObject.layer);
@@ -55,5 +55,6 @@ public class BlockState : PlayerState
         }
     }
 
-    public override void Exit() => SpriteRenderer.flipX = !Player.IsFacingRight;
+    public override void Exit() => 
+        SpriteRenderer.flipX = !Player.IsFacingRight;
 }

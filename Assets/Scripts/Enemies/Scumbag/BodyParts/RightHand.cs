@@ -35,7 +35,7 @@ public class RightHand : BodyPart
 
     private void AddRecoil() 
     {
-        float finalRecoil = Humanoid.IsFacingRight ? WeaponData.Recoil : -WeaponData.Recoil;
+        float finalRecoil = Scumbag.IsFacingRight ? WeaponData.Recoil : -WeaponData.Recoil;
         Vector3 startRotation = transform.localEulerAngles;
         Vector3 finalRotation = startRotation + new Vector3(0, 0, finalRecoil);
 

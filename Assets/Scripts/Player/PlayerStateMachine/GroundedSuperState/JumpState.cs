@@ -1,15 +1,9 @@
-using UnityEngine;
-
 public class JumpState : PlayerState
 {
     private float _xInput;
 
     public JumpState(PlayerStateMachine playerStateMachine, int animationCode) 
-        : base(playerStateMachine, animationCode) 
-    {
-        AudioClip = Player.PlayerData.JumpingSound;
-    }
-
+        : base(playerStateMachine, animationCode) => AudioClip = Player.Data.JumpingSound;
 
     public override void Enter()
     {

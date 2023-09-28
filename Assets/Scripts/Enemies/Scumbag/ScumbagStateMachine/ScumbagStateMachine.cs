@@ -9,8 +9,8 @@ public class ScumbagStateMachine : StateMachine
     public ScumbagStateMachine(Scumbag scumbag)
     {
         Scumbag = scumbag;
-        GroundedSuperState = new GroundedSuperState(this, Scumbag);
-        DeadSuperState = new ScumbagNS.DeadSuperState(this, Scumbag);
+        GroundedSuperState = new (this, Scumbag);
+        DeadSuperState = new (this, Scumbag);
         Reset();
     }
 

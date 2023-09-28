@@ -125,7 +125,7 @@ public class AttackState : PlayerState
         foreach (Collider2D result in results)
         {
             if (result.TryGetComponent(out IDamagable iDamagable))
-                iDamagable.TakeDamage(Player.PlayerData.BasicDamage);                    
+                iDamagable.TakeDamage(Player.Data.BasicDamage);                    
         }
     }
 }
