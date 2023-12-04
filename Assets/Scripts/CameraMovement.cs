@@ -13,7 +13,7 @@ public class CameraMovement : MonoBehaviour
             (_player.transform.position.x, _player.transform.position.y, _defaultZPosition);
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         float distanceTolerance = 2f;
 
